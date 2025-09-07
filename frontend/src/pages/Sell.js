@@ -32,6 +32,7 @@ function Sell() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
+    const API_URL = process.env.REACT_APP_API_URL;
     data.append('name', formData.name);
     data.append('description', formData.description);
     data.append('price', formData.price);
@@ -45,7 +46,7 @@ function Sell() {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/products', data, {
+      await axios.post(`${API_URL}/api/products`, data, {
          headers: { 'Content-Type': 'multipart/form-data' },
       });
       alert('Product posted successfully!');

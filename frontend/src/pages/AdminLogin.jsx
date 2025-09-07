@@ -3,19 +3,21 @@ import { Box, Button, TextField, Typography, Paper } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+
 function AdminLogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const handleLogin = async (e) => {
-  e.preventDefault();
-  try {
-    const res = await axios.post("http://localhost:5000/api/admin/login", {
-      username,
-      password,
-    });
+    e.preventDefault();
+    try {
+      const res = await axios.post(`${API_URL}/api/admin/login`, {
+        username,
+        password,
+      });
 
     // just check if token exists
     if (res.data.token) {
