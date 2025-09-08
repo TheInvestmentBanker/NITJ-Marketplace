@@ -1,29 +1,43 @@
-require('dotenv').config();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const Admin = require('./models/Admin');
+require('dotenv').config();
 
-async function run() {
-  if (!process.env.ADMIN_USERNAME || !process.env.ADMIN_PASSWORD || !process.env.MONGO_URI) {
-    console.error('Set ADMIN_USERNAME, ADMIN_PASSWORD and MONGO_URI in .env');
+async function createAdmin() {
+  // Validate required environment variables
+  const { ADMIN_USERNAME, ADMIN_PASSWORD, MONGO_URI } = process.env;
+  if (!ADMIN_USERNAME || !ADMIN_PASSWORD || !MONGO_URI) {
+    console.error('Missing required environment variables: ADMIN_USERNAME, ADMIN_PASSWORD, or MONGO_URI');
     process.exit(1);
   }
 
-  await mongoose.connect(process.env.MONGO_URI);
-  const exists = await Admin.findOne({ username: process.env.ADMIN_USERNAME });
-  if (exists) {
-    console.log('Admin already exists. Exiting.');
-    process.exit(0);
-  }
+  try {
+    // Connect to MongoDB
+    await mongoose.connect(MONGO_URI);
+    console.log('Connected to MongoDB');
 
-  const hashed = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
-  const admin = new Admin({ username: process.env.ADMIN_USERNAME, password: hashed });
-  await admin.save();
-  console.log('Admin created:', process.env.ADMIN_USERNAME);
-  process.exit(0);
+    // Check if admin already exists
+    const existingAdmin = await Admin.findOne({ username: ADMIN_USERNAME });
+    if (existingAdmin) {
+      console.log(`Admin with username ${ADMIN_USERNAME} already exists. Exiting.`);
+      await mongoose.connection.close();
+      process.exit(0);
+    }
+
+    // Hash password and create admin
+    const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 10);
+    const admin = new Admin({ username: ADMIN_USERNAME, password: hashedPassword });
+    await admin.save();
+    console.log(`Admin created successfully with username: ${ADMIN_USERNAME}`);
+    
+    // Close connection
+    await mongoose.connection.close();
+    process.exit(0);
+  } catch (err) {
+    console.error('Error creating admin:', err.message);
+    await mongoose.connection.close();
+    process.exit(1);
+  }
 }
 
-run().catch(err => {
-  console.error(err);
-  process.exit(1);
-});
+createAdmin();
