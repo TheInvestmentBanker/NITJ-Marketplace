@@ -26,6 +26,11 @@ function Header() {
               Sell
             </Button>
           </Link>
+          <Link to="/admin/login">
+            <Button variant="contained" color="primary">
+              Admin Login
+            </Button>
+          </Link>
           <IconButton color="inherit">
             {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>
