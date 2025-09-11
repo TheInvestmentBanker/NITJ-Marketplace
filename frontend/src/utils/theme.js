@@ -1,29 +1,58 @@
 import { createTheme } from '@mui/material/styles';
 
-let darkMode = false;  // Toggle this boolean for dark/light (one-line change)
-
-// Theme options (change colors here in one place)
-const lightThemeOptions = {
+// Light theme
+export const lightTheme = createTheme({
   palette: {
     mode: 'light',
-    primary: { main: '#1976d2' },  // Blue - change this line for entire scheme
-    background: { default: '#fff' },
+    primary: {
+      main: '#1976d2', // Blue for primary actions
+      light: '#42a5f5',
+      dark: '#1565c0',
+      contrastText: '#fff',
+    },
+    background: {
+      default: '#f2f2f2', // Light background
+      paper: '#fff', // White for cards
+    },
+    text: {
+      primary: '#000',
+      secondary: '#555',
+    },
+    logo: {
+      filter: 'none', // Normal logo for light mode
+    },
   },
-  shape: { borderRadius: 8 },  // Change radius for buttons/shapes
-};
+  shape: {
+    borderRadius: 4,
+  },
+});
 
-const darkThemeOptions = {
+// Dark theme (default)
+export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
-    primary: { main: '#90caf9' },  // Lighter blue for dark - adjust as needed
-    background: { default: '#121212' },
+    primary: {
+      main: '#90caf9', // Lighter blue for dark mode
+      light: '#e3f2fd',
+      dark: '#42a5f5',
+      contrastText: '#000',
+    },
+    background: {
+      default: '#121212', // Dark background
+      paper: '#1e1e1e', // Slightly lighter for cards
+    },
+    text: {
+      primary: '#fff',
+      secondary: '#b0b0b0',
+    },
+    logo: {
+      filter: 'brightness(0) invert(1)', // White logo for dark mode
+    },
   },
-  shape: { borderRadius: 8 },
-};
+  shape: {
+    borderRadius: 4,
+  },
+});
 
-export const theme = createTheme(darkMode ? darkThemeOptions : lightThemeOptions);
-
-export const toggleDarkMode = () => {
-  darkMode = !darkMode;
-  // Re-export or re-render app to apply (we'll handle in App.js)
-};
+// Utility to get theme based on darkMode state
+export const getTheme = (darkMode) => (darkMode ? darkTheme : lightTheme);
