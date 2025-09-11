@@ -3,6 +3,7 @@ import { Typography, TextField, Button, Checkbox, FormControlLabel, Box } from '
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+
 function Sell() {
   const [formData, setFormData] = useState({
     name: '',
