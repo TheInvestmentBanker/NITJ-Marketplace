@@ -10,6 +10,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const productRoutes = require('./routes/productRoutes');
 const fs = require('fs');
+const path = require("path");
 
 
 dotenv.config();
@@ -42,9 +43,6 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected successfully'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// Start server
-const PORT = process.env.PORT;
-
 // Serve frontend in production
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "frontend/build")));
@@ -53,4 +51,7 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
   });
 }
+
+// Start server
+const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
