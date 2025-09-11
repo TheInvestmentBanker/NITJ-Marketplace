@@ -1,9 +1,16 @@
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const productRoutes = require('./routes/productRoutes');
 const fs = require('fs');
+
 
 dotenv.config();
 
@@ -37,14 +44,13 @@ mongoose.connect(process.env.MONGO_URI)
 
 // Start server
 const PORT = process.env.PORT;
-const path = require("path");
 
 // Serve frontend in production
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "frontend/build")));
 
-  app.get("/*", (req, res) => {
-    res.sendFile(path.join(__dirname, "frontend", "build", "index.html"));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
   });
 }
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
