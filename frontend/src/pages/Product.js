@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Typography, Button, Box, Chip } from '@mui/material';
+import { Typography, Button, Box, Chip, TextField, FormControlLabel, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import axios from 'axios';
 
 const getImageUrl = (publicId) => {
@@ -11,24 +11,75 @@ const getImageUrl = (publicId) => {
 function Product() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [editing, setEditing] = useState(false);
+  const [editForm, setEditForm] = useState({});
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const isAdmin = !!localStorage.getItem('adminToken');
   const API_URL = process.env.REACT_APP_API_URL;
+  const token = localStorage.getItem('adminToken');
 
   useEffect(() => {
     axios.get(`${API_URL}/api/products/${id}`)
-      .then(res => setProduct(res.data))
+      .then(res => {
+        setProduct(res.data);
+        if (editing) setEditForm(res.data); // Prefill if editing
+      })
       .catch(err => console.error(err));
-  }, [id]);
+  }, [id, editing]);
+
+  const handleEditChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setEditForm({ ...editForm, [name]: type === 'checkbox' ? checked : value });
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImageFile(file);
+    if (file) setImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleEditSubmit = async () => {
+    try {
+      // For image: If new file, you'd need to upload to Cloudinary first and get new publicId/url
+      // For simplicity, skipping image edit here; add Cloudinary upload logic if needed (similar to Sell.js)
+      const updateData = { ...editForm };
+      if (imageFile) {
+        // Placeholder: Upload image separately and add imagePublicId/imageUrl to updateData
+        // e.g., const uploadRes = await uploadToCloudinary(imageFile); updateData.imagePublicId = uploadRes.public_id; etc.
+        alert('Image upload not implemented in this form; update text fields only for now.');
+      }
+
+      await axios.put(`${API_URL}/api/admin/products/${id}`, updateData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setEditing(false);
+      // Refresh product
+      const res = await axios.get(`${API_URL}/api/products/${id}`);
+      setProduct(res.data);
+      alert('Product updated!');
+    } catch (err) {
+      console.error(err);
+      alert('Error updating product');
+    }
+  };
 
   if (!product) return <Typography>Loading...</Typography>;
+
+  const statusLabel = product.status === 'sold' ? 'Sold' : 
+                     product.status === 'approved' ? 'Available' : 
+                     product.status === 'rejected' ? 'Rejected' : 'Pending';
+  const statusColor = product.status === 'sold' || product.status === 'rejected' ? 'error' : 
+                      product.status === 'approved' ? 'success' : 'default';
 
   return (
     <Box className="py-10 max-w-2xl mx-auto">
       <Typography variant="h4" className="mb-4">{product.name}</Typography>
       <img
-  src={getImageUrl(product.imagePublicId)}
-  alt={product.name}
-  className="w-full h-64 object-cover mb-4"
-/>
+        src={getImageUrl(product.imagePublicId)}
+        alt={product.name}
+        className="w-full h-64 object-cover mb-4"
+      />
       <Typography variant="body1" className="mb-4">{product.description}</Typography>
       <Typography variant="h6" className="mb-2">Price: ₹{product.price}</Typography>
       <Typography variant="subtitle1" className="mb-2">
@@ -42,19 +93,126 @@ function Product() {
         Bill Available: {product.hasBill ? 'Yes' : 'No'}
       </Typography>
       <Chip
-        label={product.isSold ? 'Sold' : 'Available'}
-        color={product.isSold ? 'error' : 'success'}
+        label={statusLabel}
+        color={statusColor}
         className="mb-4"
       />
       <Button
-  variant="contained"
-  disabled={product.isSold}
-  onClick={() => {
-    window.open(`https://wa.me/${product.sellerContact}`, "_blank");
-  }}
->
-  Contact Seller (via WhatsApp)
-</Button>
+        variant="contained"
+        disabled={product.status !== 'approved'}
+        onClick={() => {
+          window.open(`https://wa.me/${product.sellerContact}`, "_blank");
+        }}
+        className="mb-2"
+      >
+        Contact Seller (via WhatsApp)
+      </Button>
+      
+      {/* Admin Edit Button */}
+      {isAdmin && (
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={() => {
+            setEditing(true);
+            setEditForm({ ...product });
+          }}
+          className="ml-2"
+        >
+          Edit Product
+        </Button>
+      )}
+
+      {/* Edit Dialog/Modal */}
+      {editing && isAdmin && (
+        <Dialog open={editing} onClose={() => setEditing(false)} maxWidth="md" fullWidth>
+          <DialogTitle>Edit Product</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="Name"
+              name="name"
+              value={editForm.name || ''}
+              onChange={handleEditChange}
+              fullWidth
+              className="mb-2"
+            />
+            <TextField
+              label="Description"
+              name="description"
+              value={editForm.description || ''}
+              onChange={handleEditChange}
+              fullWidth
+              multiline
+              rows={4}
+              className="mb-2"
+            />
+            <TextField
+              label="Price"
+              name="price"
+              type="number"
+              value={editForm.price || ''}
+              onChange={handleEditChange}
+              fullWidth
+              className="mb-2"
+            />
+            <TextField
+              label="Product Age"
+              name="productAge"
+              value={editForm.productAge || ''}
+              onChange={handleEditChange}
+              fullWidth
+              className="mb-2"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="isNegotiable"
+                  checked={editForm.isNegotiable || false}
+                  onChange={handleEditChange}
+                />
+              }
+              label="Negotiable"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="hasBill"
+                  checked={editForm.hasBill || false}
+                  onChange={handleEditChange}
+                />
+              }
+              label="Has Bill"
+            />
+            <TextField
+              label="Status"
+              name="status"
+              select
+              value={editForm.status || 'pending'}
+              onChange={handleEditChange}
+              fullWidth
+              className="mb-2"
+              SelectProps={{ native: true }}
+            >
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="sold">Sold</option>
+              <option value="rejected">Rejected</option>
+            </TextField>
+            {/* Image Edit: For now, placeholder; implement upload if needed */}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="mb-2"
+            />
+            {imagePreview && <img src={imagePreview} alt="Preview" className="w-32 h-32 object-cover" />}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setEditing(false)}>Cancel</Button>
+            <Button onClick={handleEditSubmit} variant="contained">Save Changes</Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </Box>
   );
 }

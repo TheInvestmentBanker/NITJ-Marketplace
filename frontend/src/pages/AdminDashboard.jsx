@@ -7,6 +7,9 @@ import {
   Card,
   CardContent,
   CardMedia,
+  Tabs,
+  Tab,
+  CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -18,33 +21,48 @@ const getImageUrl = (publicId) => {
 
 function AdminDashboard() {
   const [products, setProducts] = useState([]);
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [tabValue, setTabValue] = useState(0); // 0: Products, 1: Services
   const navigate = useNavigate();
   const token = localStorage.getItem("adminToken");
-
-  // Use API URL from environment variable
   const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     if (!token) return navigate("/admin/login");
 
-    axios
-      .get(`${API_URL}/api/admin/products/pending`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setProducts(res.data))
-      .catch((err) => {
+    const fetchPending = async () => {
+      try {
+        const [prodRes, servRes] = await Promise.all([
+          axios.get(`${API_URL}/api/admin/products/pending`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get(`${API_URL}/api/admin/services/pending`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
+        setProducts(prodRes.data);
+        setServices(servRes.data);
+      } catch (err) {
         console.error(err);
         if (err.response && err.response.status === 401) navigate("/admin/login");
-      });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPending();
   }, [token, navigate, API_URL]);
 
-  const approve = async (id) => {
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
+
+  const approveProduct = async (id) => {
     try {
-      await axios.put(
-        `${API_URL}/api/admin/products/${id}/approve`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await axios.put(`${API_URL}/api/admin/products/${id}/approve`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setProducts(products.filter((p) => p._id !== id));
     } catch (err) {
       console.error(err);
@@ -52,13 +70,22 @@ function AdminDashboard() {
     }
   };
 
-  const reject = async (id) => {
-    if (
-      !window.confirm(
-        "Delete this product? This will remove the image from Cloudinary."
-      )
-    )
-      return;
+  const rejectProduct = async (id) => {
+    const reason = prompt("Reason for rejection (optional):");
+    if (reason === null) return; // Cancelled
+    try {
+      await axios.patch(`${API_URL}/api/admin/products/${id}/reject`, { reason }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setProducts(products.filter((p) => p._id !== id));
+    } catch (err) {
+      console.error(err);
+      alert("Could not reject");
+    }
+  };
+
+  const deleteProduct = async (id) => {
+    if (!window.confirm("Delete this product permanently?")) return;
     try {
       await axios.delete(`${API_URL}/api/admin/products/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -70,43 +97,122 @@ function AdminDashboard() {
     }
   };
 
+  const approveService = async (id) => {
+    try {
+      await axios.put(`${API_URL}/api/admin/services/${id}/approve`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setServices(services.filter((s) => s._id !== id));
+    } catch (err) {
+      console.error(err);
+      alert("Could not approve");
+    }
+  };
+
+  const rejectService = async (id) => {
+    const reason = prompt("Reason for rejection (optional):");
+    if (reason === null) return;
+    try {
+      await axios.patch(`${API_URL}/api/admin/services/${id}/reject`, { reason }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setServices(services.filter((s) => s._id !== id));
+    } catch (err) {
+      console.error(err);
+      alert("Could not reject");
+    }
+  };
+
+  const deleteService = async (id) => {
+    if (!window.confirm("Delete this service permanently?")) return;
+    try {
+      await axios.delete(`${API_URL}/api/admin/services/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setServices(services.filter((s) => s._id !== id));
+    } catch (err) {
+      console.error(err);
+      alert("Could not delete");
+    }
+  };
+
+  const currentItems = tabValue === 0 ? products : services;
+  const isProducts = tabValue === 0;
+
+  if (loading) return <CircularProgress className="mx-auto my-10" />;
+
   return (
     <Box className="py-6 max-w-4xl mx-auto">
-      <Typography variant="h4" className="mb-4">
-        Pending Products
-      </Typography>
-      {products.length === 0 && <Typography>No pending products</Typography>}
-      {products.map((p) => (
-        <Card key={p._id} className="mb-4 flex">
+      <Typography variant="h4" className="mb-4">Admin Dashboard - Pending Items</Typography>
+      
+      {/* Tabs for Products/Services */}
+      <Tabs value={tabValue} onChange={handleTabChange} centered className="mb-6">
+        <Tab label="Pending Products" />
+        <Tab label="Pending Services" />
+      </Tabs>
+
+      {currentItems.length === 0 && <Typography>No pending {isProducts ? 'products' : 'services'}</Typography>}
+      
+      {currentItems.map((item) => (
+        <Card key={item._id} className="mb-4 flex">
           <CardMedia
             component="img"
-            image={getImageUrl(p.imagePublicId)}
-            alt={p.name}
+            image={getImageUrl(item.imagePublicId)}
+            alt={isProducts ? item.name : item.serviceTitle}
             style={{ width: 200, objectFit: "cover" }}
           />
           <CardContent style={{ flex: 1 }}>
-            <Typography variant="h6">{p.name}</Typography>
-            <Typography>Price: ₹{p.price}</Typography>
-            <Typography>{p.description}</Typography>
+            <Typography variant="h6">{isProducts ? item.name : item.serviceTitle}</Typography>
+            <Typography>Price: ₹{item.price} {item.priceType ? `(${item.priceType})` : ''}</Typography>
+            {isProducts ? <Typography>Age: {item.productAge}</Typography> : (
+              <>
+                <Typography>Category: {item.serviceCategory}</Typography>
+                {item.location && <Typography>Location: {item.location}</Typography>}
+                {item.duration && <Typography>Duration: {item.duration}</Typography>}
+              </>
+            )}
+            <Typography variant="body2" className="mb-2">{item.description}</Typography>
             <div style={{ marginTop: 8 }}>
               <Button
                 variant="contained"
-                onClick={() => approve(p._id)}
+                onClick={() => isProducts ? approveProduct(item._id) : approveService(item._id)}
                 style={{ marginRight: 8 }}
               >
                 Approve
               </Button>
               <Button
                 variant="outlined"
-                color="error"
-                onClick={() => reject(p._id)}
+                color="warning"
+                onClick={() => isProducts ? rejectProduct(item._id) : rejectService(item._id)}
+                style={{ marginRight: 8 }}
               >
                 Reject
+              </Button>
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => isProducts ? deleteProduct(item._id) : deleteService(item._id)}
+                style={{ marginRight: 8 }}
+              >
+                Delete
+              </Button>
+              <Button
+                variant="text"
+                onClick={() => navigate(isProducts ? `/product/${item._id}` : `/services/${item._id}`)}
+              >
+                View/Edit
               </Button>
             </div>
           </CardContent>
         </Card>
       ))}
+      
+      {/* Note: Admin can navigate back to home/products/services like normal users */}
+      <Box className="mt-6 text-center">
+        <Button variant="outlined" onClick={() => navigate('/')}>Go to Home</Button>
+        <Button variant="outlined" onClick={() => navigate('/products')} className="ml-2">View All Products</Button>
+        <Button variant="outlined" onClick={() => navigate('/services')} className="ml-2">View All Services</Button>
+      </Box>
     </Box>
   );
 }

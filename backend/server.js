@@ -26,6 +26,10 @@ app.use('/api/admin', adminRoutes);
 
 app.use('/api/products', productRoutes);
 
+// New: Services routes
+const serviceRoutes = require('./routes/serviceRoutes');
+app.use('/api/services', serviceRoutes);
+
 // Database connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected successfully'))

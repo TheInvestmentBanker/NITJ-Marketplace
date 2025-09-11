@@ -3,7 +3,6 @@ import { Typography, TextField, Button, Checkbox, FormControlLabel, Box } from '
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-
 function Sell() {
   const [formData, setFormData] = useState({
     name: '',
@@ -61,8 +60,25 @@ function Sell() {
   return (
     <Box className="py-10 max-w-lg mx-auto">
       <Typography variant="h4" className="mb-6 text-center">
-        Post a Product
+        Sell Something
       </Typography>
+      {/* Option buttons for Product or Service */}
+      <Box className="flex justify-center space-x-4 mb-6">
+        <Button 
+          variant="contained" 
+          onClick={() => navigate('/sell')} // Current page for products
+          className="px-6"
+        >
+          Sell a Product
+        </Button>
+        <Button 
+          variant="outlined" 
+          onClick={() => navigate('/sell-service')}
+          className="px-6"
+        >
+          Sell a Service
+        </Button>
+      </Box>
       <form onSubmit={handleSubmit} className="space-y-4">
         <TextField
           label="Product Name"
