@@ -27,7 +27,7 @@ const getImageUrl = (publicId) => {
 const Home = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Mobile if < 600px
-  const itemsPerSlide = isMobile ? 1 : 3; // 1 item on mobile, 3 on larger screens
+  const itemsPerSlide = isMobile ? 1 : 4; // 1 item on mobile, 4 on larger screens
   const API_URL = process.env.REACT_APP_API_URL;
   const [products, setProducts] = useState([]);
   const [services, setServices] = useState([]);
@@ -85,6 +85,8 @@ const Home = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          paddingTop : '100px',
+          paddingBottom : '100px',
           color: theme.palette.text.primary,
         }}
       >
@@ -107,9 +109,9 @@ const Home = () => {
                 color: theme.palette.text.secondary,
               }}
             >
-              Buy and sell student-made products and services!
+              Buy and sell products and services!
             </Typography>
-            <Box sx={{ width: '123%', minHeight: '300px' }}>
+            <Box sx={{ width: '123%', minHeight: '300px', paddingBottom : '25px' }}>
               {products.length === 0 ? (
                 <Typography variant="body1">No approved products available.</Typography>
               ) : (
@@ -121,14 +123,14 @@ const Home = () => {
                       to={`/product/${product._id}`}
                       sx={{
                         textDecoration: 'none',
-                        boxShadow: 3,
-                        borderRadius: 2,
+                        boxShadow: 5,
+                        borderRadius: 3,
                         display: 'flex',
-                        flexDirection: 'row',
-                        height: '350px',
-                        maxWidth: isMobile ? '100%' : '360px',
+                        flexDirection: 'column',
+                        height: '390px',
+                        maxWidth: isMobile ? '100%' : '270px',
                         width: '100%',
-                        margin: '0 70px',
+                        margin: '0 7px',
                       }}
                     >
                       <CardMedia
@@ -136,13 +138,23 @@ const Home = () => {
                         height="200"
                         image={getImageUrl(product.imagePublicId || product.imageUrl)}
                         alt={product.name}
-                        sx={{ objectFit: 'cover', width: '200px' }}
+                        sx={{ objectFit: 'cover', borderRadius: 6, padding : '18px' }}
                       />
-                      <CardContent sx={{ flexGrow: 1, padding: '10px' }}>
+                      <CardContent sx={{ flexGrow: 1 }}>
                         <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
                           {product.name}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" color="text.secondary"
+                        sx={{
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,          // only 2 lines
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          lineHeight: "1.5rem",        // set line height
+                          maxHeight: "3rem",           // 2 lines × 1.5rem
+                          minHeight: "3rem",   // ensures uniform card height
+                          }}>
                           {product.description}
                         </Typography>
                       </CardContent>
@@ -162,7 +174,7 @@ const Home = () => {
                   backgroundColor: theme.palette.primary.dark,
                 },
                 padding: '10px 20px',
-                fontSize: '1.1rem',
+                fontSize: '1.2rem',
               }}
             >
               Shop Products
@@ -178,84 +190,109 @@ const Home = () => {
 
       {/* Services Section */}
       <Box
-        id="contact"
+  id="services"
+  sx={{
+    backgroundColor: theme.palette.background.paper,
+    minHeight: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: '100px',
+    paddingBottom: '100px',
+    color: theme.palette.text.primary,
+  }}
+>
+  <Container maxWidth="lg">
+    <Stack spacing={4} alignItems="center" textAlign="center">
+      <Typography
+        variant="h4"
         sx={{
-          py: 6,
-          backgroundColor: theme.palette.background.paper,
-          color: theme.palette.text.primary,
+          fontWeight: 'bold',
+          fontSize: { xs: '2rem', md: '3rem' },
+          color: 'primary.main',
         }}
       >
-        <Container maxWidth="lg">
-          <Typography
-            variant="h4"
-            sx={{
-              textAlign: 'center',
-              mb: 4,
-              fontWeight: 'bold',
-              color: 'primary.main',
-            }}
-          >
-            Our Services
-          </Typography>
-          <Box sx={{ width: '100%', minHeight: '300px' }}>
-            {services.length === 0 ? (
-              <Typography variant="body1">No approved services available.</Typography>
-            ) : (
-              <Slider {...slickSettings}>
-                {services.map((service) => (
-                  <Card
-                    key={service._id}
-                    component={RouterLink}
-                    to={`/services/${service._id}`}
-                    sx={{
-                      textDecoration: 'none',
-                      boxShadow: 3,
-                      borderRadius: 2,
-                      display: 'flex',
-                      flexDirection: 'row',
-                      height: '200px',
-                      maxWidth: isMobile ? '100%' : '360px',
-                      width: '100%',
-                      margin: '0 10px',
-                    }}
-                  >
-                    <CardMedia
-                      component="img"
-                      height="200"
-                      image={getImageUrl(service.imagePublicId || service.imageUrl)}
-                      alt={service.serviceTitle}
-                      sx={{ objectFit: 'cover', width: '200px' }}
-                    />
-                    <CardContent sx={{ flexGrow: 1, padding: '10px' }}>
-                      <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-                        {service.serviceTitle}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {service.description}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                ))}
-              </Slider>
-            )}
-          </Box>
-          <Button
-            component={RouterLink}
-            to="/services"
-            variant="contained"
-            sx={{
-              backgroundColor: 'primary.main',
-              '&:hover': {
-                backgroundColor: 'primary.dark',
-              },
-              padding: '10px 20px',
-              marginTop: '20px',
-            }}
-          >
-            Explore Services
-          </Button>
-        </Container>
+        Our Services
+      </Typography>
+      <Box sx={{ width: '123%', minHeight: '300px', paddingBottom: '25px' }}>
+        <Slider {...slickSettings}>
+          {services.map((service) => (
+            <Card
+              key={service.id}
+              component={RouterLink}
+              to={service.route}
+              sx={{
+                textDecoration: 'none',
+                boxShadow: 5,
+                borderRadius: 3,
+                display: 'flex',
+                flexDirection: 'column',
+                height: '390px',
+                maxWidth: isMobile ? '100%' : '270px',
+                width: '100%',
+                margin: '0 7px',
+              }}
+            >
+              <CardMedia
+                component="img"
+                height="200"
+                image={service.image}
+                alt={service.name}
+                sx={{
+                  objectFit: 'cover',
+                  borderRadius: 6,
+                  padding: '18px',
+                }}
+              />
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: 'bold', color: 'primary.main' }}
+                >
+                  {service.name}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    lineHeight: '1.5rem',
+                    maxHeight: '3rem',
+                    minHeight: '3rem',
+                  }}
+                >
+                  {service.description}
+                </Typography>
+              </CardContent>
+            </Card>
+          ))}
+        </Slider>
       </Box>
+      <Button
+        variant="contained"
+        component={RouterLink}
+        to="/services"
+        sx={{
+          backgroundColor:
+            theme.palette.mode === 'light'
+              ? theme.palette.primary.main
+              : theme.palette.primary.light,
+          '&:hover': {
+            backgroundColor: theme.palette.primary.dark,
+          },
+          padding: '10px 20px',
+          fontSize: '1.2rem',
+        }}
+      >
+        Explore Services
+      </Button>
+    </Stack>
+  </Container>
+</Box>
     </>
   );
 };

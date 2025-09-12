@@ -18,6 +18,12 @@ export const lightTheme = createTheme({
       primary: '#000',
       secondary: '#555',
     },
+    header:{
+      major: '#0582ca',
+      minor: '#00a6fb',
+      button: '#00a6fb',
+      sell: '#9632a7',
+    },
     logo: {
       filter: 'none', // Normal logo for light mode
     },
@@ -44,6 +50,12 @@ export const darkTheme = createTheme({
     text: {
       primary: '#fff',
       secondary: '#b0b0b0',
+    },
+    header:{
+      major: '#121212',
+      minor: '#1e1e1e',
+      button: '#00a6fb',
+      sell: '#9632a7',
     },
     logo: {
       filter: 'brightness(0) invert(1)', // White logo for dark mode

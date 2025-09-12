@@ -6,12 +6,13 @@ import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import Logo from '../assets/App.png';
 import { useNavigate } from 'react-router-dom';
+import { DarkMode, LightMode, Mail } from '@mui/icons-material';
 
 function Header({ darkMode, setDarkMode }) {
   const theme = useTheme();
   const navigate = useNavigate();
   return (
-    <AppBar position="static" sx={{ backgroundColor: theme.palette.primary.dark }}>
+    <AppBar position="fixed" sx={{ backgroundColor: theme.palette.header.major, padding : '5px' }}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         {/* Logo */}
         <Box sx={{ flexGrow: 1 }}>
@@ -19,20 +20,20 @@ function Header({ darkMode, setDarkMode }) {
         </Box>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <Link to="/sell" style={{ textDecoration: 'none' }}>
-            <Button variant="contained" color="secondary">
+            <Button variant="contained" sx={{ backgroundColor: theme.palette.header.sell, color: '#ffffff'}}>
               Sell
             </Button>
           </Link>
           <Link to="/admin/login" style={{ textDecoration: 'none' }}>
-            <Button variant="contained" color="primary">
+            <Button variant="contained" sx={{ backgroundColor: theme.palette.header.button, color: '#ffffff'}}>
               Admin Login
             </Button>
           </Link>
           <IconButton
-            sx={{ color: '#4682B4' }}
+            sx={{Color: (theme) => theme.palette.primary.dark}}
             onClick={() => setDarkMode(!darkMode)}
           >
-            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+            {darkMode ? <LightMode /> : <DarkMode />}
           </IconButton>
         </div>
       </Toolbar>
