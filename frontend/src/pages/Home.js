@@ -137,7 +137,7 @@ const Home = () => {
                         component="img"
                         image={getImageUrl(product.imagePublicId || product.imageUrl)}
                         alt={product.name}
-                        sx={{ objectFit: 'contain', borderRadius: 6, padding : '18px', aspectRatio: '1 / 1', width: '100%', height: 'auto', }}
+                        sx={{ objectFit: 'cover', borderRadius: 6, padding : '18px', aspectRatio: '1 / 1', width: '100%', height: 'auto', }}
                       />
                       <CardContent sx={{ flexGrow: 1 }}>
                         <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
