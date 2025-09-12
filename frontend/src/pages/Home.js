@@ -136,6 +136,7 @@ const Home = () => {
                       <CardMedia
                         component="img"
                         height="200"
+                        width="200"
                         image={getImageUrl(product.imagePublicId || product.imageUrl)}
                         alt={product.name}
                         sx={{ objectFit: 'cover', borderRadius: 6, padding : '18px' }}
