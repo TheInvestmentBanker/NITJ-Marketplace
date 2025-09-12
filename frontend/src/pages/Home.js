@@ -135,11 +135,9 @@ const Home = () => {
                     >
                       <CardMedia
                         component="img"
-                        height="200"
-                        width="200"
                         image={getImageUrl(product.imagePublicId || product.imageUrl)}
                         alt={product.name}
-                        sx={{ objectFit: 'cover', borderRadius: 6, padding : '18px' }}
+                        sx={{ objectFit: 'cover', borderRadius: 6, padding : '18px', height: '200', width: '200' }}
                       />
                       <CardContent sx={{ flexGrow: 1 }}>
                         <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
