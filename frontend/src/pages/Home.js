@@ -115,7 +115,7 @@ const Home = () => {
               {products.length === 0 ? (
                 <Typography variant="body1">No approved products available.</Typography>
               ) : (
-                <Slider {...slickSettings}>
+                <Slider sx={{paddingTop: '25px'}} {...slickSettings}>
                   {products.map((product) => (
                     <Card
                       key={product._id}
@@ -137,7 +137,7 @@ const Home = () => {
                         component="img"
                         image={getImageUrl(product.imagePublicId || product.imageUrl)}
                         alt={product.name}
-                        sx={{ objectFit: 'cover', borderRadius: 6, padding : '18px', height: '200', width: '200' }}
+                        sx={{ objectFit: 'cover', borderRadius: 6, padding : '18px', aspectRatio: '1 / 1', width: '100%', }}
                       />
                       <CardContent sx={{ flexGrow: 1 }}>
                         <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
