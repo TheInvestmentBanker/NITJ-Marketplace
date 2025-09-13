@@ -139,13 +139,13 @@ const Home = () => {
                       to={`/product/${product._id}`}
                       sx={{
                         textDecoration: 'none',
-                        width: 250, 
+                        width: "80%", 
                         flexShrink: 0, 
                         boxShadow: 5,
                         borderRadius: 3,
                         display: 'flex',
                         flexDirection: 'column',
-                        maxWidth: '100%',
+                        maxWidth: '80%',
                         marginRight: '16px', // Increased horizontal margin for larger gaps (16px left/right = ~32px between cards)
                       }}
                     >
