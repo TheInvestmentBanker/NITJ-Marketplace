@@ -42,7 +42,7 @@ function AllProducts() {
   if (error) return <Typography variant="h6" className="text-center" color="error">Error: {error}</Typography>;
 
   return (
-    <Container maxWidth="lg" sx={{ py: 6 }}>
+    <Container maxWidth="lg" sx={{ py: 60, paddingTop : '100px', }}>
       <Typography variant="h4" sx={{ mb: 6, textAlign: 'center', fontSize: { xs: '1.75rem', md: '2.125rem' } }}>
         Available Products
       </Typography>
