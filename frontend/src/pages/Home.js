@@ -207,10 +207,7 @@ const Home = () => {
       </Box>
 
       {/* Blank Box Sections - kept as is, but added responsive padding */}
-      <Box id="locations" sx={{ py: { xs: 4, md: 6 }, backgroundColor: theme.palette.background.default }} />
-      <Box sx={{ py: { xs: 4, md: 6 }, backgroundColor: theme.palette.background.paper }} />
-      <Box sx={{ py: { xs: 4, md: 6 }, backgroundColor: theme.palette.background.default }} />
-
+      <Box id="locations" sx={{ padding: 20, backgroundColor: theme.palette.background.default }} />
       {/* Services Section - similar updates as hero, with increased card gaps */}
       <Box
         id="services"
