@@ -4,11 +4,13 @@ import { useState, useEffect } from 'react';
 import { Typography, Box, Card, CardMedia, CardContent, Grid, Container } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
 
 function AllService() {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const theme = useTheme();
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -27,7 +29,7 @@ function AllService() {
   if (loading) return <Typography>Loading services...</Typography>;
 
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 }, paddingTop : '100px', }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 },backgroundColor: theme.palette.background.paper, paddingTop : '100px', }}>
       <Typography variant="h4" sx={{ mb: 6, textAlign: 'center', fontSize: { xs: '1.75rem', md: '2.125rem' } }}>
         All Services
       </Typography>

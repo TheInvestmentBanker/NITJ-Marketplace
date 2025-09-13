@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { Grid, Card, CardContent, CardMedia, Typography, Button, Chip, Container } from '@mui/material';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useTheme } from '@mui/material/styles';
 
 const getImageUrl = (publicId) => {
   if (!publicId) return 'https://via.placeholder.com/200';
@@ -20,6 +21,7 @@ function AllProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const theme = useTheme();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -42,7 +44,7 @@ function AllProducts() {
   if (error) return <Typography variant="h6" className="text-center" color="error">Error: {error}</Typography>;
 
   return (
-    <Container maxWidth="lg" sx={{ py: 60, paddingTop : '100px', }}>
+    <Container maxWidth="lg" sx={{ py: 60, paddingTop : '100px', backgroundColor: theme.palette.background.paper,}}>
       <Typography variant="h4" sx={{ mb: 6, textAlign: 'center', fontSize: { xs: '1.75rem', md: '2.125rem' } }}>
         Available Products
       </Typography>
