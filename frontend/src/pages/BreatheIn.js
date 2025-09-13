@@ -19,7 +19,7 @@ function BreatheIn({ onFinish }) {
           left: 0,
           width: '100vw',
           height: '100vh',
-          bgcolor: 'primary.main', // Royal Purple (#6B3FA0)
+          bgcolor: '#121212', // Royal Purple (#6B3FA0)
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -34,7 +34,6 @@ function BreatheIn({ onFinish }) {
             maxWidth: '50%',
             maxHeight: '50%',
             objectFit: 'contain',
-            filter: 'brightness(0) invert(1)', // White logo for contrast against Royal Purple
             animation: 'heartbeat 1.5s ease-in-out infinite',
             '@keyframes heartbeat': {
               '0%': { transform: 'scale(1)', opacity: 1 },

@@ -131,7 +131,7 @@ const Home = () => {
               {products.length === 0 ? (
                 <Typography variant="body1">No approved products available.</Typography>
               ) : (
-                <Slider {...slickSettings}>
+                <Slider {...slickSettings} sx={{ px: { xs: 1, md: 2 } }}> {/* Added padding to slider for edge gaps */}
                   {products.map((product) => (
                     <Card
                       key={product._id}
@@ -145,7 +145,7 @@ const Home = () => {
                         flexDirection: 'column',
                         maxWidth: '100%',
                         width: '100%',
-                        m: 1,
+                        mx: 2, // Increased horizontal margin for larger gaps (16px left/right = ~32px between cards)
                       }}
                     >
                       <CardMedia
@@ -156,7 +156,7 @@ const Home = () => {
                           objectFit: 'cover', 
                           borderRadius: 6, 
                           p: 2, 
-                          aspectRatio: '16/9', // Flexible aspect ratio
+                          aspectRatio: '16/9',
                           width: '100%', 
                           height: 'auto' 
                         }}
@@ -210,7 +210,7 @@ const Home = () => {
       <Box sx={{ py: { xs: 4, md: 6 }, backgroundColor: theme.palette.background.paper }} />
       <Box sx={{ py: { xs: 4, md: 6 }, backgroundColor: theme.palette.background.default }} />
 
-      {/* Services Section - similar updates as hero */}
+      {/* Services Section - similar updates as hero, with increased card gaps */}
       <Box
         id="services"
         sx={{
@@ -236,7 +236,7 @@ const Home = () => {
               Our Services
             </Typography>
             <Box sx={{ width: '100%', minHeight: { xs: '200px', md: '300px' }, pb: 3 }}>
-              <Slider {...slickSettings}>
+              <Slider {...slickSettings} sx={{ px: { xs: 1, md: 2 } }}>
                 {services.map((service) => (
                   <Card
                     key={service.id}
@@ -250,7 +250,7 @@ const Home = () => {
                       flexDirection: 'column',
                       maxWidth: '100%',
                       width: '100%',
-                      m: 1,
+                      mx: 2, // Increased horizontal margin for larger gaps
                     }}
                   >
                     <CardMedia
