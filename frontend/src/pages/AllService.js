@@ -29,7 +29,7 @@ function AllService() {
   if (loading) return <Typography>Loading services...</Typography>;
 
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 },backgroundColor: theme.palette.background.paper, paddingTop : '100px', }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 }, paddingTop : '100px', }}>
       <Typography variant="h4" sx={{ mb: 6, textAlign: 'center', fontSize: { xs: '1.75rem', md: '2.125rem' } }}>
         All Services
       </Typography>
