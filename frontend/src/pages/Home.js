@@ -231,7 +231,7 @@ const Home = () => {
                 color: 'primary.main',
               }}
             >
-              Our Services
+              All Services
             </Typography>
             <Box sx={{ width: '100%', minHeight: { xs: '200px', md: '300px' }, pb: 3 }}>
               <Slider {...slickSettings} sx={{ px: { xs: 1, md: 2 } }}>
