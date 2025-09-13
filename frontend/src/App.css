@@ -7,6 +7,14 @@
   pointer-events: none;
 }
 
+.slick-slide {
+  margin: 0 15px; /* Adjust 15px for desired gap */
+}
+
+.slick-list {
+  margin: 0 -15px; /* Compensate for the added margins to prevent overflow */
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
