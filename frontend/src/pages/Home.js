@@ -127,7 +127,7 @@ const Home = () => {
             >
               Buy and sell products and services!
             </Typography>
-            <Box sx={{ width: '100%', minHeight: { xs: '200px', md: '300px' }, pb: 3 }}>
+            <Box sx={{ width: '123%', minHeight: { xs: '200px', md: '300px' }, pb: 3 }}>
               {products.length === 0 ? (
                 <Typography variant="body1">No approved products available.</Typography>
               ) : (
@@ -145,7 +145,7 @@ const Home = () => {
                         flexDirection: 'column',
                         maxWidth: '100%',
                         width: '100%',
-                        mx: 2, // Increased horizontal margin for larger gaps (16px left/right = ~32px between cards)
+                        mx: '16px', // Increased horizontal margin for larger gaps (16px left/right = ~32px between cards)
                       }}
                     >
                       <CardMedia
@@ -156,7 +156,7 @@ const Home = () => {
                           objectFit: 'cover', 
                           borderRadius: 6, 
                           p: 2, 
-                          aspectRatio: '16/9',
+                          aspectRatio: '1/1',
                           width: '100%', 
                           height: 'auto' 
                         }}
