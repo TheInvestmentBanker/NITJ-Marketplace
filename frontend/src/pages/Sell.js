@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Typography, TextField, Button, Checkbox, FormControlLabel, Box } from '@mui/material';
+import { Typography, TextField, Button, Checkbox, FormControlLabel, Box, Container } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -58,28 +58,28 @@ function Sell() {
   };
 
   return (
-    <Box className="py-10 max-w-lg mx-auto">
-      <Typography variant="h4" className="mb-6 text-center">
+    <Container maxWidth="sm" sx={{ py: { xs: 6, md: 10 } }}>
+      <Typography variant="h4" sx={{ mb: 6, textAlign: 'center', fontSize: { xs: '1.75rem', md: '2.125rem' } }}>
         Sell Something
       </Typography>
       {/* Option buttons for Product or Service */}
-      <Box className="flex justify-center space-x-4 mb-6">
+      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mb: 6, flexDirection: { xs: 'column', sm: 'row' } }}>
         <Button 
           variant="contained" 
           onClick={() => navigate('/sell')} // Current page for products
-          className="px-6"
+          sx={{ px: { xs: 4, md: 6 } }}
         >
           Sell a Product
         </Button>
         <Button 
           variant="outlined" 
           onClick={() => navigate('/sell-service')}
-          className="px-6"
+          sx={{ px: { xs: 4, md: 6 } }}
         >
           Sell a Service
         </Button>
       </Box>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         <TextField
           label="Product Name"
           name="name"
@@ -159,17 +159,17 @@ function Sell() {
           className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
         />
         {imagePreview && (
-          <img
+          <Box component="img"
             src={imagePreview}
             alt="Preview"
-            className="mt-4 w-full h-48 object-cover rounded-md"
+            sx={{ mt: 2, width: '100%', height: 'auto', aspectRatio: '16/9', objectFit: 'cover', borderRadius: 2 }}
           />
         )}
-        <Button type="submit" variant="contained" fullWidth className="py-3">
+        <Button type="submit" variant="contained" fullWidth sx={{ py: 1.5 }}>
           Post Product
         </Button>
-      </form>
-    </Box>
+      </Box>
+    </Container>
   );
 }
 

@@ -3,7 +3,6 @@ import { Box, Button, TextField, Typography, Paper } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-
 function AdminLogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -19,30 +18,29 @@ function AdminLogin() {
         password,
       });
 
-    // just check if token exists
-    if (res.data.token) {
-      localStorage.setItem("adminToken", res.data.token);
-      navigate("/admin/dashboard");
-    } else {
-      setError("Invalid credentials");
+      // just check if token exists
+      if (res.data.token) {
+        localStorage.setItem("adminToken", res.data.token);
+        navigate("/admin/dashboard");
+      } else {
+        setError("Invalid credentials");
+      }
+    } catch (err) {
+      setError("Login failed. Try again.");
     }
-  } catch (err) {
-    setError("Login failed. Try again.");
-  }
-};
+  };
 
   return (
-    <Box className="flex justify-center items-center min-h-screen bg-gray-100">
-      <Paper elevation={3} className="p-8 max-w-md w-full">
-        <Typography variant="h5" className="mb-4 text-center">
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: 'grey.100', px: { xs: 2, md: 0 } }}>
+      <Paper elevation={3} sx={{ p: { xs: 4, md: 8 }, maxWidth: 'md', width: '100%' }}>
+        <Typography variant="h5" sx={{ mb: 4, textAlign: 'center', fontSize: { xs: '1.5rem', md: '1.75rem' } }}>
           Admin Login
         </Typography>
-        <form onSubmit={handleLogin}>
+        <Box component="form" onSubmit={handleLogin} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <TextField
             fullWidth
             label="Username"
             variant="outlined"
-            margin="normal"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
@@ -51,12 +49,11 @@ function AdminLogin() {
             type="password"
             label="Password"
             variant="outlined"
-            margin="normal"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           {error && (
-            <Typography color="error" className="mb-2">
+            <Typography color="error" sx={{ mb: 2 }}>
               {error}
             </Typography>
           )}
@@ -64,11 +61,11 @@ function AdminLogin() {
             fullWidth
             variant="contained"
             type="submit"
-            className="mt-4"
+            sx={{ mt: 2, py: 1.5 }}
           >
             Login
           </Button>
-        </form>
+        </Box>
       </Paper>
     </Box>
   );

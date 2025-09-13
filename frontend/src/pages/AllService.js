@@ -1,5 +1,7 @@
+// Updated AllService.js with similar changes as AllProducts.js
+
 import { useState, useEffect } from 'react';
-import { Typography, Box, Card, CardMedia, CardContent, Grid } from '@mui/material';
+import { Typography, Box, Card, CardMedia, CardContent, Grid, Container } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,28 +27,28 @@ function AllService() {
   if (loading) return <Typography>Loading services...</Typography>;
 
   return (
-    <Box className="py-10">
-      <Typography variant="h4" className="mb-6 text-center">
+    <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 } }}>
+      <Typography variant="h4" sx={{ mb: 6, textAlign: 'center', fontSize: { xs: '1.75rem', md: '2.125rem' } }}>
         All Services
       </Typography>
-      <Grid container spacing={4} justifyContent="center">
+      <Grid container spacing={{ xs: 2, md: 4 }} justifyContent="center">
         {services.map((service) => (
-          <Grid item key={service._id} xs={12} sm={6} md={4}>
-            <Card className="h-full" onClick={() => navigate(`/services/${service._id}`)}>
+          <Grid item key={service._id} xs={12} sm={6} md={4} lg={3}>
+            <Card sx={{ height: '100%', cursor: 'pointer' }} onClick={() => navigate(`/services/${service._id}`)}>
               {service.imageUrl && (
                 <CardMedia
                   component="img"
-                  height="200"
                   image={service.imageUrl}
                   alt={service.serviceTitle}
+                  sx={{ height: 'auto', aspectRatio: '3/2', objectFit: 'cover' }}
                 />
               )}
               <CardContent>
-                <Typography variant="h6">{service.serviceTitle}</Typography>
+                <Typography variant="h6" sx={{ fontSize: { xs: '1rem', md: '1.25rem' } }}>{service.serviceTitle}</Typography>
                 <Typography variant="body2" color="text.secondary">
                   {service.description.substring(0, 100)}...
                 </Typography>
-                <Typography variant="h6" className="mt-2">
+                <Typography variant="h6" sx={{ mt: 2, fontSize: { xs: '1.125rem', md: '1.25rem' } }}>
                   ₹{service.price} ({service.priceType})
                 </Typography>
                 <Typography variant="body2">
@@ -63,7 +65,7 @@ function AllService() {
           </Grid>
         ))}
       </Grid>
-    </Box>
+    </Container>
   );
 }
 

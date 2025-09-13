@@ -10,6 +10,8 @@ import {
   Tabs,
   Tab,
   CircularProgress,
+  Container,
+  Grid,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -142,78 +144,79 @@ function AdminDashboard() {
   if (loading) return <CircularProgress className="mx-auto my-10" />;
 
   return (
-    <Box className="py-6 max-w-4xl mx-auto">
-      <Typography variant="h4" className="mb-4">Admin Dashboard - Pending Items</Typography>
+    <Container maxWidth="lg" sx={{ py: 6 }}>
+      <Typography variant="h4" sx={{ mb: 4, fontSize: { xs: '1.75rem', md: '2.125rem' } }}>Admin Dashboard - Pending Items</Typography>
       
       {/* Tabs for Products/Services */}
-      <Tabs value={tabValue} onChange={handleTabChange} centered className="mb-6">
+      <Tabs value={tabValue} onChange={handleTabChange} centered fullWidth sx={{ mb: 6 }}>
         <Tab label="Pending Products" />
         <Tab label="Pending Services" />
       </Tabs>
 
       {currentItems.length === 0 && <Typography>No pending {isProducts ? 'products' : 'services'}</Typography>}
       
-      {currentItems.map((item) => (
-        <Card key={item._id} className="mb-4 flex">
-          <CardMedia
-            component="img"
-            image={getImageUrl(item.imagePublicId)}
-            alt={isProducts ? item.name : item.serviceTitle}
-            style={{ width: 200, objectFit: "cover" }}
-          />
-          <CardContent style={{ flex: 1 }}>
-            <Typography variant="h6">{isProducts ? item.name : item.serviceTitle}</Typography>
-            <Typography>Price: ₹{item.price} {item.priceType ? `(${item.priceType})` : ''}</Typography>
-            {isProducts ? <Typography>Age: {item.productAge}</Typography> : (
-              <>
-                <Typography>Category: {item.serviceCategory}</Typography>
-                {item.location && <Typography>Location: {item.location}</Typography>}
-                {item.duration && <Typography>Duration: {item.duration}</Typography>}
-              </>
-            )}
-            <Typography variant="body2" className="mb-2">{item.description}</Typography>
-            <div style={{ marginTop: 8 }}>
-              <Button
-                variant="contained"
-                onClick={() => isProducts ? approveProduct(item._id) : approveService(item._id)}
-                style={{ marginRight: 8 }}
-              >
-                Approve
-              </Button>
-              <Button
-                variant="outlined"
-                color="warning"
-                onClick={() => isProducts ? rejectProduct(item._id) : rejectService(item._id)}
-                style={{ marginRight: 8 }}
-              >
-                Reject
-              </Button>
-              <Button
-                variant="outlined"
-                color="error"
-                onClick={() => isProducts ? deleteProduct(item._id) : deleteService(item._id)}
-                style={{ marginRight: 8 }}
-              >
-                Delete
-              </Button>
-              <Button
-                variant="text"
-                onClick={() => navigate(isProducts ? `/product/${item._id}` : `/services/${item._id}`)}
-              >
-                View/Edit
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+      <Grid container spacing={4}>
+        {currentItems.map((item) => (
+          <Grid item xs={12} key={item._id}>
+            <Card sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' } }}>
+              <CardMedia
+                component="img"
+                image={getImageUrl(item.imagePublicId)}
+                alt={isProducts ? item.name : item.serviceTitle}
+                sx={{ width: { xs: '100%', sm: 200 }, height: { xs: 'auto', sm: 200 }, objectFit: "cover" }}
+              />
+              <CardContent sx={{ flex: 1 }}>
+                <Typography variant="h6" sx={{ fontSize: { xs: '1.25rem', md: '1.5rem' } }}>{isProducts ? item.name : item.serviceTitle}</Typography>
+                <Typography>Price: ₹{item.price} {item.priceType ? `(${item.priceType})` : ''}</Typography>
+                {isProducts ? <Typography>Age: {item.productAge}</Typography> : (
+                  <>
+                    <Typography>Category: {item.serviceCategory}</Typography>
+                    {item.location && <Typography>Location: {item.location}</Typography>}
+                    {item.duration && <Typography>Duration: {item.duration}</Typography>}
+                  </>
+                )}
+                <Typography variant="body2" sx={{ mb: 2 }}>{item.description}</Typography>
+                <Box sx={{ mt: 2, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 1 }}>
+                  <Button
+                    variant="contained"
+                    onClick={() => isProducts ? approveProduct(item._id) : approveService(item._id)}
+                  >
+                    Approve
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="warning"
+                    onClick={() => isProducts ? rejectProduct(item._id) : rejectService(item._id)}
+                  >
+                    Reject
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => isProducts ? deleteProduct(item._id) : deleteService(item._id)}
+                  >
+                    Delete
+                  </Button>
+                  <Button
+                    variant="text"
+                    onClick={() => navigate(isProducts ? `/product/${item._id}` : `/services/${item._id}`)}
+                  >
+                    View/Edit
+                  </Button>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
       
       {/* Note: Admin can navigate back to home/products/services like normal users */}
-      <Box className="mt-6 text-center">
+      <Box sx={{ mt: 6, textAlign: 'center', display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'center', gap: 2 }}>
         <Button variant="outlined" onClick={() => navigate('/')}>Go to Home</Button>
-        <Button variant="outlined" onClick={() => navigate('/products')} className="ml-2">View All Products</Button>
-        <Button variant="outlined" onClick={() => navigate('/services')} className="ml-2">View All Services</Button>
+        <Button variant="outlined" onClick={() => navigate('/products')}>View All Products</Button>
+        <Button variant="outlined" onClick={() => navigate('/services')}>View All Services</Button>
       </Box>
-    </Box>
+    </Container>
   );
 }
 

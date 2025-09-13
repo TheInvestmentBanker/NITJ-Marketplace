@@ -10,18 +10,25 @@ import AllService from './pages/AllService'; // New: Import AllService
 import EdgeBall from './components/EdgeBall';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import BreatheIn from './pages/BreatheIn';
 import { ThemeProvider } from '@mui/material/styles';
 import React, { useState } from 'react';
 import { getTheme } from './utils/theme';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-function App() {
+const App = () => {
   const [darkMode, setDarkMode] = useState(true); // Dark mode as default
+  const [isLoading, setIsLoading] = useState(true);
+  const handleFinishLoading = () => {
+    setIsLoading(false);
+  }
   return (
     <ThemeProvider theme={getTheme(darkMode)}>
+     {isLoading ? (
+        <BreatheIn onFinish={handleFinishLoading} />
+      ) : (
       <Router>
         <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-        <EdgeBall/>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<AllProducts />} />
@@ -35,6 +42,7 @@ function App() {
         </Routes>
         <Footer/>
       </Router>
+      )}
     </ThemeProvider>
   );
 }

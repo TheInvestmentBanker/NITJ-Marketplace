@@ -13,7 +13,6 @@ import {
 import { Link as RouterLink } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import Slider from 'react-slick';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import axios from 'axios';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -26,8 +25,6 @@ const getImageUrl = (publicId) => {
 
 const Home = () => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Mobile if < 600px
-  const itemsPerSlide = isMobile ? 1 : 4; // 1 item on mobile, 4 on larger screens
   const API_URL = process.env.REACT_APP_API_URL;
   const [products, setProducts] = useState([]);
   const [services, setServices] = useState([]);
@@ -56,12 +53,12 @@ const Home = () => {
     fetchData();
   }, [API_URL]);
 
-  // Slick carousel settings
+  // Slick carousel settings with responsive breakpoints
   const slickSettings = {
     dots: true,
     infinite: true,
     speed: 1500,
-    slidesToShow: itemsPerSlide,
+    slidesToShow: 4, // Default for lg+
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 0,
@@ -69,6 +66,26 @@ const Home = () => {
     adaptiveHeight: true,
     cssEase: 'linear',
     pauseOnHover: true,
+    responsive: [
+      {
+        breakpoint: 1200, // lg
+        settings: {
+          slidesToShow: 3,
+        },
+      },
+      {
+        breakpoint: 900, // md
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+      {
+        breakpoint: 600, // sm
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
   };
 
   if (loading) return <CircularProgress className="mx-auto my-10" />;
@@ -81,12 +98,11 @@ const Home = () => {
         id="hero"
         sx={{
           backgroundColor: theme.palette.background.paper,
-          minHeight: '100vh',
+          minHeight: { xs: 'auto', md: '100vh' },
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          paddingTop : '100px',
-          paddingBottom : '100px',
+          py: { xs: 6, md: 12 },
           color: theme.palette.text.primary,
         }}
       >
@@ -96,7 +112,7 @@ const Home = () => {
               variant="h1"
               sx={{
                 fontWeight: 'bold',
-                fontSize: { xs: '2.5rem', md: '4rem' },
+                fontSize: { xs: '2.5rem', sm: '3rem', md: '4rem' },
               }}
             >
               College Marketplace
@@ -104,18 +120,18 @@ const Home = () => {
             <Typography
               variant="h5"
               sx={{
-                fontSize: { xs: '1rem', md: '1.5rem' },
+                fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
                 maxWidth: '600px',
                 color: theme.palette.text.secondary,
               }}
             >
               Buy and sell products and services!
             </Typography>
-            <Box sx={{ width: '123%', minHeight: '300px', paddingBottom : '25px' }}>
+            <Box sx={{ width: '100%', minHeight: { xs: '200px', md: '300px' }, pb: 3 }}>
               {products.length === 0 ? (
                 <Typography variant="body1">No approved products available.</Typography>
               ) : (
-                <Slider sx={{paddingTop: '25px'}} {...slickSettings}>
+                <Slider {...slickSettings}>
                   {products.map((product) => (
                     <Card
                       key={product._id}
@@ -127,32 +143,38 @@ const Home = () => {
                         borderRadius: 3,
                         display: 'flex',
                         flexDirection: 'column',
-                        height: '390px',
-                        maxWidth: isMobile ? '100%' : '270px',
+                        maxWidth: '100%',
                         width: '100%',
-                        margin: '0 7px',
+                        m: 1,
                       }}
                     >
                       <CardMedia
                         component="img"
                         image={getImageUrl(product.imagePublicId || product.imageUrl)}
                         alt={product.name}
-                        sx={{ objectFit: 'cover', borderRadius: 6, padding : '18px', aspectRatio: '1 / 1', width: '100%', height: 'auto', }}
+                        sx={{ 
+                          objectFit: 'cover', 
+                          borderRadius: 6, 
+                          p: 2, 
+                          aspectRatio: '16/9', // Flexible aspect ratio
+                          width: '100%', 
+                          height: 'auto' 
+                        }}
                       />
                       <CardContent sx={{ flexGrow: 1 }}>
                         <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
                           {product.name}
                         </Typography>
                         <Typography variant="body2" color="text.secondary"
-                        sx={{
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,          // only 2 lines
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          lineHeight: "1.5rem",        // set line height
-                          maxHeight: "3rem",           // 2 lines × 1.5rem
-                          minHeight: "3rem",   // ensures uniform card height
+                          sx={{
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            lineHeight: "1.5rem",
+                            maxHeight: "3rem",
+                            minHeight: "3rem",
                           }}>
                           {product.description}
                         </Typography>
@@ -172,8 +194,9 @@ const Home = () => {
                 '&:hover': {
                   backgroundColor: theme.palette.primary.dark,
                 },
-                padding: '10px 20px',
-                fontSize: '1.2rem',
+                px: { xs: 4, md: 6 },
+                py: 1.5,
+                fontSize: { xs: '1rem', md: '1.2rem' },
               }}
             >
               Shop Products
@@ -182,116 +205,117 @@ const Home = () => {
         </Container>
       </Box>
 
-      {/* Blank Box Sections */}
-      <Box id="locations" sx={{ py: 6, backgroundColor: theme.palette.background.default }} />
-      <Box sx={{ py: 6, backgroundColor: theme.palette.background.paper }} />
-      <Box sx={{ py: 6, backgroundColor: theme.palette.background.default }} />
+      {/* Blank Box Sections - kept as is, but added responsive padding */}
+      <Box id="locations" sx={{ py: { xs: 4, md: 6 }, backgroundColor: theme.palette.background.default }} />
+      <Box sx={{ py: { xs: 4, md: 6 }, backgroundColor: theme.palette.background.paper }} />
+      <Box sx={{ py: { xs: 4, md: 6 }, backgroundColor: theme.palette.background.default }} />
 
-      {/* Services Section */}
+      {/* Services Section - similar updates as hero */}
       <Box
-  id="services"
-  sx={{
-    backgroundColor: theme.palette.background.paper,
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: '100px',
-    paddingBottom: '100px',
-    color: theme.palette.text.primary,
-  }}
->
-  <Container maxWidth="lg">
-    <Stack spacing={4} alignItems="center" textAlign="center">
-      <Typography
-        variant="h4"
+        id="services"
         sx={{
-          fontWeight: 'bold',
-          fontSize: { xs: '2rem', md: '3rem' },
-          color: 'primary.main',
+          backgroundColor: theme.palette.background.paper,
+          minHeight: { xs: 'auto', md: '100vh' },
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          py: { xs: 6, md: 12 },
+          color: theme.palette.text.primary,
         }}
       >
-        Our Services
-      </Typography>
-      <Box sx={{ width: '123%', minHeight: '300px', paddingBottom: '25px' }}>
-        <Slider {...slickSettings}>
-          {services.map((service) => (
-            <Card
-              key={service.id}
-              component={RouterLink}
-              to={service.route}
+        <Container maxWidth="lg">
+          <Stack spacing={4} alignItems="center" textAlign="center">
+            <Typography
+              variant="h4"
               sx={{
-                textDecoration: 'none',
-                boxShadow: 5,
-                borderRadius: 3,
-                display: 'flex',
-                flexDirection: 'column',
-                height: '390px',
-                maxWidth: isMobile ? '100%' : '270px',
-                width: '100%',
-                margin: '0 7px',
+                fontWeight: 'bold',
+                fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+                color: 'primary.main',
               }}
             >
-              <CardMedia
-                component="img"
-                height="200"
-                image={service.image}
-                alt={service.name}
-                sx={{
-                  objectFit: 'cover',
-                  borderRadius: 6,
-                  padding: '18px',
-                }}
-              />
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography
-                  variant="h6"
-                  sx={{ fontWeight: 'bold', color: 'primary.main' }}
-                >
-                  {service.name}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{
-                    display: '-webkit-box',
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    lineHeight: '1.5rem',
-                    maxHeight: '3rem',
-                    minHeight: '3rem',
-                  }}
-                >
-                  {service.description}
-                </Typography>
-              </CardContent>
-            </Card>
-          ))}
-        </Slider>
+              Our Services
+            </Typography>
+            <Box sx={{ width: '100%', minHeight: { xs: '200px', md: '300px' }, pb: 3 }}>
+              <Slider {...slickSettings}>
+                {services.map((service) => (
+                  <Card
+                    key={service.id}
+                    component={RouterLink}
+                    to={service.route}
+                    sx={{
+                      textDecoration: 'none',
+                      boxShadow: 5,
+                      borderRadius: 3,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      maxWidth: '100%',
+                      width: '100%',
+                      m: 1,
+                    }}
+                  >
+                    <CardMedia
+                      component="img"
+                      image={service.image}
+                      alt={service.name}
+                      sx={{
+                        objectFit: 'cover',
+                        borderRadius: 6,
+                        p: 2,
+                        aspectRatio: '16/9',
+                        width: '100%',
+                        height: 'auto',
+                      }}
+                    />
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <Typography
+                        variant="h6"
+                        sx={{ fontWeight: 'bold', color: 'primary.main' }}
+                      >
+                        {service.name}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          lineHeight: '1.5rem',
+                          maxHeight: '3rem',
+                          minHeight: '3rem',
+                        }}
+                      >
+                        {service.description}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Slider>
+            </Box>
+            <Button
+              variant="contained"
+              component={RouterLink}
+              to="/services"
+              sx={{
+                backgroundColor:
+                  theme.palette.mode === 'light'
+                    ? theme.palette.primary.main
+                    : theme.palette.primary.light,
+                '&:hover': {
+                  backgroundColor: theme.palette.primary.dark,
+                },
+                px: { xs: 4, md: 6 },
+                py: 1.5,
+                fontSize: { xs: '1rem', md: '1.2rem' },
+              }}
+            >
+              Explore Services
+            </Button>
+          </Stack>
+        </Container>
       </Box>
-      <Button
-        variant="contained"
-        component={RouterLink}
-        to="/services"
-        sx={{
-          backgroundColor:
-            theme.palette.mode === 'light'
-              ? theme.palette.primary.main
-              : theme.palette.primary.light,
-          '&:hover': {
-            backgroundColor: theme.palette.primary.dark,
-          },
-          padding: '10px 20px',
-          fontSize: '1.2rem',
-        }}
-      >
-        Explore Services
-      </Button>
-    </Stack>
-  </Container>
-</Box>
     </>
   );
 };
