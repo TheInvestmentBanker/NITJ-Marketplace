@@ -71,7 +71,7 @@ function SingleService() {
                      service.status === 'approved' ? 'success' : 'default';
 
   return (
-    <Box maxWidth="md" sx={{ 
+    <Box sx={{ 
       py: { xs: 15, md: 12 },                         
       backgroundColor: theme.palette.background.paper, 
       borderRadius: 0,                                

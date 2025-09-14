@@ -60,7 +60,7 @@ function AllProducts() {
                   component="img"
                   image={getImageUrl(product.imagePublicId || product.imageUrl)}
                   alt={product.name}
-                  sx={{ height: 'auto', aspectRatio: '3/2', objectFit: 'cover' }}
+                  sx={{ height: 'auto', aspectRatio: '1/1', objectFit: 'cover' }}
                 />
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Typography variant="h6" sx={{ fontSize: { xs: '1rem', md: '1.25rem' } }}>{product.name}</Typography>

@@ -48,7 +48,7 @@ function AllService() {
                   component="img"
                   image={service.imageUrl}
                   alt={service.serviceTitle}
-                  sx={{ height: 'auto', aspectRatio: '3/2', objectFit: 'cover' }}
+                  sx={{ height: 'auto', aspectRatio: '1/1', objectFit: 'cover' }}
                 />
               )}
               <CardContent>

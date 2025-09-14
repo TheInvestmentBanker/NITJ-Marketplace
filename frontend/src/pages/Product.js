@@ -75,7 +75,7 @@ function Product() {
                       product.status === 'approved' ? 'success' : 'default';
 
   return (
-    <Box maxWidth="md" sx={{ 
+    <Box sx={{ 
       py: { xs: 15, md: 12 },                         // [CHANGED] padding same as Sell.js
       backgroundColor: theme.palette.background.paper, // [CHANGED] adaptive background
       borderRadius: 0,                                // [CHANGED] match Sell.js flat style
