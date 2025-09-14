@@ -68,19 +68,19 @@ const Home = () => {
     pauseOnHover: true,
     responsive: [
       {
-        breakpoint: 1200, // lg
+        breakpoint: 900, // md
         settings: {
           slidesToShow: 3,
         },
       },
       {
-        breakpoint: 900, // md
+        breakpoint: 600, // sm
         settings: {
           slidesToShow: 2,
         },
       },
       {
-        breakpoint: 600, // sm
+        breakpoint: 400, // xs
         settings: {
           slidesToShow: 1,
         },
@@ -155,6 +155,7 @@ const Home = () => {
                         component="img"
                         image={getImageUrl(product.imagePublicId || product.imageUrl)}
                         alt={product.name}
+                        height= '200'
                         sx={{ 
                           objectFit: 'cover', 
                           borderRadius: 5, 
