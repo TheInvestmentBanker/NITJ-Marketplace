@@ -128,7 +128,7 @@ const Home = () => {
             >
               Buy and sell products and services!
             </Typography>
-            <Box sx={{ width: {xs: '85%', sm: '95%', md: '123%',}, minHeight: '300px', pb: '25px' }}>
+            <Box sx={{ width: {xs: '85%', sm: '95%', md: '95%', lg: '123%'}, minHeight: '300px', pb: '25px' }}>
               {products.length === 0 ? (
                 <Typography variant="body1">No approved products available.</Typography>
               ) : (
@@ -234,7 +234,7 @@ const Home = () => {
             >
               All Services
             </Typography>
-            <Box sx={{ width: {xs: '85%', sm: '95%', md: '123%',}, minHeight: '300px', pb: 3 }}>
+            <Box sx={{ width: {xs: '85%', sm: '95%', md: '95%', lg: '123%'}, minHeight: '300px', pb: 3 }}>
               <Slider {...slickSettings} sx={{ px: { xs: 1, md: 2 } }}>
                 {services.map((service) => (
                   <Card
