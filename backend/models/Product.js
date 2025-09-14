@@ -20,6 +20,10 @@ const productSchema = new mongoose.Schema({
     enum: ['pending', 'approved', 'sold', 'rejected'],
     default: 'pending',
   },
+
+  // NEW FIELD: Only admin can change
+  isGroceries: { type: Boolean, default: false },
+  
   // New: Optional reason for rejection/edit
   reason: { type: String },
   createdAt: { type: Date, default: Date.now },

@@ -66,6 +66,7 @@ router.post('/', upload.single('image'), async (req, res) => {
       status: 'pending',
       isApproved: false,
       isSold: false,
+      isGroceries: false,
     });
 
     const newProduct = await product.save();
@@ -132,6 +133,9 @@ router.put('/:id', upload.single('image'), /* protect, isAdmin, */ async (req, r
       updateData.imagePublicId = result.public_id;
       fs.unlinkSync(req.file.path);
     }
+    if (typeof req.body.isGroceries !== 'undefined') {
+      updateData.isGroceries = req.body.isGroceries === 'true' || req.body.isGroceries === true;
+    }
 
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
@@ -169,6 +173,11 @@ router.patch('/:id/status', /* protect, isAdmin, */ async (req, res) => {
     product.reason = reason || product.reason;
     product.isApproved = status === 'approved';
     product.isSold = status === 'sold';
+    
+    if (typeof req.body.isGroceries !== 'undefined') {
+      product.isGroceries = req.body.isGroceries === 'true' || req.body.isGroceries === true;
+    }
+
     await product.save();
     res.json({ message: `Status updated to ${status}`, product });
   } catch (err) {
