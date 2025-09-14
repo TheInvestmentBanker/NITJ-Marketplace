@@ -4,7 +4,7 @@ export const getImageUrl = (publicId) => {
   return cloudinary.url(publicId, {
     secure: true,
     transformation: [
-      { fetch_format: 'auto', quality: 'auto', width: 1200 },
+      { fetch_format: 'auto', quality: 'auto', width: 1200, crop: 'fit' }
     ],
   });
 };

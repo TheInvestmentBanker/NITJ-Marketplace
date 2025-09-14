@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Typography, Button, Box, Chip, TextField, FormControlLabel, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions, Container } from '@mui/material';
 import axios from 'axios';
+import { useTheme } from '@mui/material/styles'; 
 
 const getImageUrl = (publicId) => {
   if (!publicId) return 'https://via.placeholder.com/600x400';
@@ -18,6 +19,7 @@ function Product() {
   const isAdmin = !!localStorage.getItem('adminToken');
   const API_URL = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem('adminToken');
+  const theme = useTheme();
 
   useEffect(() => {
     axios.get(`${API_URL}/api/products/${id}`)
@@ -73,24 +75,34 @@ function Product() {
                       product.status === 'approved' ? 'success' : 'default';
 
   return (
-    <Container maxWidth="md" sx={{ py: { xs: 10, md: 10 } }}>
-      <Typography variant="h4" sx={{ mb: 4, fontSize: { xs: '1.75rem', md: '2.125rem' } }}>{product.name}</Typography>
+    <Container maxWidth="md" sx={{ 
+      py: { xs: 15, md: 12 },                         // [CHANGED] padding same as Sell.js
+      backgroundColor: theme.palette.background.paper, // [CHANGED] adaptive background
+      borderRadius: 0,                                // [CHANGED] match Sell.js flat style
+      boxShadow: 3,                                   // [CHANGED] stronger shadow like Sell.js
+    }}>
+      <Typography 
+        variant="h2" 
+        sx={{ mb: 4, fontSize: '2rem', color: theme.palette.text.secondary }} // [CHANGED] color match Sell.js
+      >
+        {product.name}
+      </Typography>
       <Box
         component="img"
         src={getImageUrl(product.imagePublicId)}
         alt={product.name}
-        sx={{ width: '100%', height: 'auto', aspectRatio: '3/2', objectFit: 'cover', mb: 4, borderRadius: 2 }}
+        sx={{ width: '100%', height: 'auto', aspectRatio: '1/1', objectFit: 'cover', mb: 4, borderRadius: 2, backgroundColor: '#fff' }}
       />
-      <Typography variant="body1" sx={{ mb: 4, fontSize: { xs: '0.875rem', md: '1rem' } }}>{product.description}</Typography>
-      <Typography variant="h6" sx={{ mb: 2, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>Price: ₹{product.price}</Typography>
-      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>
+      <Typography variant="body1" sx={{ mb: 4, fontSize: { xs: '0.875rem', md: '1rem' },  color: theme.palette.text.secondary  }}>{product.description}</Typography>
+      <Typography variant="h6" sx={{ mb: 2, fontSize: { xs: '1.25rem', md: '1.5rem' },color: theme.palette.text.secondary }}>Price: ₹{product.price}</Typography>
+      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary  }}>
         Seller: {product.sellerName} - Contact: {product.sellerContact}
       </Typography>
-      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>Product Age: {product.productAge}</Typography>
-      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>
+      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary  }}>Product Age: {product.productAge}</Typography>
+      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary  }}>
         Price Negotiable: {product.isNegotiable ? 'Yes' : 'No'}
       </Typography>
-      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>
+      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary  }}>
         Bill Available: {product.hasBill ? 'Yes' : 'No'}
       </Typography>
       <Chip
@@ -134,6 +146,7 @@ function Product() {
               name="name"
               value={editForm.name || ''}
               onChange={handleEditChange}
+              InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
               fullWidth
             />
             <TextField
@@ -143,6 +156,7 @@ function Product() {
               onChange={handleEditChange}
               fullWidth
               multiline
+              InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
               rows={4}
             />
             <TextField
@@ -151,6 +165,7 @@ function Product() {
               type="number"
               value={editForm.price || ''}
               onChange={handleEditChange}
+              InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
               fullWidth
             />
             <TextField
@@ -158,6 +173,7 @@ function Product() {
               name="productAge"
               value={editForm.productAge || ''}
               onChange={handleEditChange}
+              InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
               fullWidth
             />
             <FormControlLabel
@@ -168,6 +184,7 @@ function Product() {
                   onChange={handleEditChange}
                 />
               }
+              sx={{color: theme.palette.text.secondary}}
               label="Negotiable"
             />
             <FormControlLabel
@@ -178,6 +195,7 @@ function Product() {
                   onChange={handleEditChange}
                 />
               }
+              sx={{color: theme.palette.text.secondary}}
               label="Has Bill"
             />
             <TextField
@@ -187,6 +205,7 @@ function Product() {
               value={editForm.status || 'pending'}
               onChange={handleEditChange}
               fullWidth
+              InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
               SelectProps={{ native: true }}
             >
               <option value="pending">Pending</option>

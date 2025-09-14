@@ -19,8 +19,8 @@ import 'slick-carousel/slick/slick-theme.css';
 
 // Cloudinary image helper
 const getImageUrl = (publicId) => {
-  if (!publicId) return 'https://via.placeholder.com/360x200';
-  return `https://res.cloudinary.com/dj1e78e53/image/upload/f_auto,q_auto,w_360,h_200,c_fill/${publicId}`;
+  if (!publicId) return 'https://via.placeholder.com/360x360';
+  return `https://res.cloudinary.com/dj1e78e53/image/upload/f_auto,q_auto,w_360,h_360,c_fill/${publicId}`;
 };
 
 const Home = () => {

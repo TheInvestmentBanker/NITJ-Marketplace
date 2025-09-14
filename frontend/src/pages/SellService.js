@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Typography, TextField, Button, Checkbox, FormControlLabel, Box, Select, MenuItem, Container } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
 
 function SellService() {
   const [formData, setFormData] = useState({
@@ -19,6 +20,7 @@ function SellService() {
   });
   const [imagePreview, setImagePreview] = useState(null);
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -62,8 +64,13 @@ function SellService() {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ py: { xs: 10, md: 10 } }}>
-      <Typography variant="h4" sx={{ mb: 6, textAlign: 'center', fontSize: { xs: '1.75rem', md: '2.125rem' } }}>
+    <Container sx={{ 
+     py: { xs: 15, md: 12 }, 
+     backgroundColor: (theme) => theme.palette.background.paper,
+     borderRadius: 0, 
+     boxShadow: 3, 
+     }}>
+      <Typography variant="h2" textAlign="center" sx={{fontSize: '2rem', paddingTop:'15px',paddingBottom:'25px', color: theme.palette.text.secondary,}}>
         Post a Service
       </Typography>
       <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -73,6 +80,7 @@ function SellService() {
           value={formData.serviceTitle}
           onChange={handleChange}
           fullWidth
+          InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
           required
         />
         <TextField
@@ -83,6 +91,7 @@ function SellService() {
           fullWidth
           multiline
           rows={4}
+          InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
           required
         />
         <TextField
@@ -92,12 +101,14 @@ function SellService() {
           value={formData.price}
           onChange={handleChange}
           fullWidth
+          InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
           required
         />
         <Select
           name="priceType"
           value={formData.priceType}
           onChange={handleChange}
+          InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
           fullWidth
         >
           <MenuItem value="fixed">Fixed Price</MenuItem>
@@ -108,6 +119,7 @@ function SellService() {
           name="duration"
           value={formData.duration}
           onChange={handleChange}
+          InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
           fullWidth
         />
         <TextField
@@ -116,6 +128,7 @@ function SellService() {
           value={formData.serviceCategory}
           onChange={handleChange}
           fullWidth
+          InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
           required
         />
         <TextField
@@ -123,6 +136,7 @@ function SellService() {
           name="location"
           value={formData.location}
           onChange={handleChange}
+          InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
           fullWidth
         />
         <TextField
@@ -131,6 +145,7 @@ function SellService() {
           value={formData.sellerName}
           onChange={handleChange}
           fullWidth
+          InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
           required
         />
         <TextField
@@ -139,6 +154,7 @@ function SellService() {
           value={formData.sellerContact}
           onChange={handleChange}
           fullWidth
+          InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
           required
         />
         <FormControlLabel
@@ -149,6 +165,7 @@ function SellService() {
               onChange={handleChange}
             />
           }
+          sx={{color: theme.palette.text.secondary}}
           label="Price Negotiable"
         />
         <input
@@ -162,7 +179,7 @@ function SellService() {
           <Box component="img"
             src={imagePreview}
             alt="Preview"
-            sx={{ mt: 2, width: '100%', height: 'auto', aspectRatio: '16/9', objectFit: 'cover', borderRadius: 2 }}
+            sx={{ mt: 2, width: '100%', height: 'auto', aspectRatio: '1/1', objectFit: 'contain', borderRadius: 2 }}
           />
         )}
         <Button type="submit" variant="contained" fullWidth sx={{ py: 1.5 }}>

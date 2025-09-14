@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Typography, Button, Box, Chip, TextField, FormControlLabel, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions, Container } from '@mui/material';
 import axios from 'axios';
+import { useTheme } from '@mui/material/styles'; 
 
 const getImageUrl = (publicId) => {
   if (!publicId) return 'https://via.placeholder.com/600x400';
@@ -18,6 +19,7 @@ function SingleService() {
   const isAdmin = !!localStorage.getItem('adminToken');
   const API_URL = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem('adminToken');
+  const theme = useTheme();
 
   useEffect(() => {
     axios.get(`${API_URL}/api/services/${id}`)
@@ -69,23 +71,32 @@ function SingleService() {
                      service.status === 'approved' ? 'success' : 'default';
 
   return (
-    <Container maxWidth="md" sx={{ py: { xs: 10, md: 10 } }}>
-      <Typography variant="h4" sx={{ mb: 4, fontSize: { xs: '1.75rem', md: '2.125rem' } }}>{service.serviceTitle}</Typography>
+    <Container maxWidth="md" sx={{ 
+      py: { xs: 15, md: 12 },                         
+      backgroundColor: theme.palette.background.paper, 
+      borderRadius: 0,                                
+      boxShadow: 3,                                   
+    }}>
+      <Typography 
+        variant="h2" 
+        sx={{ mb: 4, fontSize: '2rem', color: theme.palette.text.secondary }}>
+        {service.serviceTitle}
+      </Typography>
       <Box
         component="img"
         src={getImageUrl(service.imagePublicId)}
         alt={service.serviceTitle}
-        sx={{ width: '100%', height: 'auto', aspectRatio: '3/2', objectFit: 'cover', mb: 4, borderRadius: 2 }}
+        sx={{ width: '100%', height: 'auto', aspectRatio: '1/1', objectFit: 'contain', mb: 4, borderRadius: 2, backgroundColor: '#fff'}}
       />
-      <Typography variant="body1" sx={{ mb: 4, fontSize: { xs: '0.875rem', md: '1rem' } }}>{service.description}</Typography>
-      <Typography variant="h6" sx={{ mb: 2, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>Price: ₹{service.price} ({service.priceType})</Typography>
-      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>
+      <Typography variant="body1" sx={{ mb: 4, fontSize: { xs: '0.875rem', md: '1rem' },  color: theme.palette.text.secondary  }}>{service.description}</Typography>
+      <Typography variant="h6" sx={{ mb: 2, fontSize: { xs: '1.25rem', md: '1.5rem' },  color: theme.palette.text.secondary  }}>Price: ₹{service.price} ({service.priceType})</Typography>
+      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' },  color: theme.palette.text.secondary  }}>
         Seller: {service.sellerName} - Contact: {service.sellerContact}
       </Typography>
-      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>Category: {service.serviceCategory}</Typography>
-      {service.duration && <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>Duration: {service.duration}</Typography>}
-      {service.location && <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>Location: {service.location}</Typography>}
-      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>
+      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' },  color: theme.palette.text.secondary  }}>Category: {service.serviceCategory}</Typography>
+      {service.duration && <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' },  color: theme.palette.text.secondary  }}>Duration: {service.duration}</Typography>}
+      {service.location && <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' },  color: theme.palette.text.secondary  }}>Location: {service.location}</Typography>}
+      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' },  color: theme.palette.text.secondary  }}>
         Price Negotiable: {service.isNegotiable ? 'Yes' : 'No'}
       </Typography>
       <Chip
@@ -129,6 +140,7 @@ function SingleService() {
               name="serviceTitle"
               value={editForm.serviceTitle || ''}
               onChange={handleEditChange}
+              InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
               fullWidth
             />
             <TextField
@@ -138,6 +150,7 @@ function SingleService() {
               onChange={handleEditChange}
               fullWidth
               multiline
+              InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
               rows={4}
             />
             <TextField
@@ -146,6 +159,7 @@ function SingleService() {
               type="number"
               value={editForm.price || ''}
               onChange={handleEditChange}
+              InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
               fullWidth
             />
             <TextField
@@ -155,6 +169,7 @@ function SingleService() {
               value={editForm.priceType || 'fixed'}
               onChange={handleEditChange}
               fullWidth
+              InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
               SelectProps={{ native: true }}
             >
               <option value="fixed">Fixed</option>
@@ -165,6 +180,7 @@ function SingleService() {
               name="duration"
               value={editForm.duration || ''}
               onChange={handleEditChange}
+              InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
               fullWidth
             />
             <TextField
@@ -172,6 +188,7 @@ function SingleService() {
               name="serviceCategory"
               value={editForm.serviceCategory || ''}
               onChange={handleEditChange}
+              InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
               fullWidth
             />
             <TextField
@@ -179,6 +196,7 @@ function SingleService() {
               name="location"
               value={editForm.location || ''}
               onChange={handleEditChange}
+              InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
               fullWidth
             />
             <FormControlLabel
@@ -189,6 +207,7 @@ function SingleService() {
                   onChange={handleEditChange}
                 />
               }
+              sx={{color: theme.palette.text.secondary}}
               label="Negotiable"
             />
             <TextField
@@ -198,6 +217,7 @@ function SingleService() {
               value={editForm.status || 'pending'}
               onChange={handleEditChange}
               fullWidth
+              InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
               SelectProps={{ native: true }}
             >
               <option value="pending">Pending</option>

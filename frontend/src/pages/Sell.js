@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Typography, TextField, Button, Checkbox, FormControlLabel, Box, Container } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
 
 function Sell() {
   const [formData, setFormData] = useState({
@@ -17,6 +18,7 @@ function Sell() {
   });
   const [imagePreview, setImagePreview] = useState(null);
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -58,8 +60,13 @@ function Sell() {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ py: { xs: 15, md: 12 } }}>
-      <Typography variant="h4" sx={{ mb: 6, textAlign: 'center', fontSize: { xs: '1.75rem', md: '2.125rem' } }}>
+    <Container sx={{ 
+     py: { xs: 15, md: 12 }, 
+     backgroundColor: (theme) => theme.palette.background.paper,
+     borderRadius: 0, 
+     boxShadow: 3, 
+     }}>
+      <Typography variant="h2" textAlign="center" sx={{fontSize: '2rem', paddingTop:'15px',paddingBottom:'25px', color: theme.palette.text.secondary,}}>
         Sell Something
       </Typography>
       {/* Option buttons for Product or Service */}
@@ -67,14 +74,14 @@ function Sell() {
         <Button 
           variant="contained" 
           onClick={() => navigate('/sell')} // Current page for products
-          sx={{ px: { xs: 4, md: 6 } }}
+          sx={{ padding: 1}}
         >
           Sell a Product
         </Button>
         <Button 
           variant="outlined" 
           onClick={() => navigate('/sell-service')}
-          sx={{ px: { xs: 4, md: 6 } }}
+          sx={{ padding: 1}}
         >
           Sell a Service
         </Button>
@@ -86,6 +93,7 @@ function Sell() {
           value={formData.name}
           onChange={handleChange}
           fullWidth
+          InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
           required
         />
         <TextField
@@ -96,6 +104,7 @@ function Sell() {
           fullWidth
           multiline
           rows={4}
+          InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
           required
         />
         <TextField
@@ -105,6 +114,7 @@ function Sell() {
           value={formData.price}
           onChange={handleChange}
           fullWidth
+          InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
           required
         />
         <TextField
@@ -113,6 +123,7 @@ function Sell() {
           value={formData.sellerName}
           onChange={handleChange}
           fullWidth
+          InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
           required
         />
         <TextField
@@ -121,6 +132,7 @@ function Sell() {
           value={formData.sellerContact}
           onChange={handleChange}
           fullWidth
+          InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
           required
         />
         <TextField
@@ -129,6 +141,7 @@ function Sell() {
           value={formData.productAge}
           onChange={handleChange}
           fullWidth
+          InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
           required
         />
         <FormControlLabel
@@ -139,6 +152,7 @@ function Sell() {
               onChange={handleChange}
             />
           }
+          sx={{color: theme.palette.text.secondary}}
           label="Price Negotiable"
         />
         <FormControlLabel
@@ -149,6 +163,7 @@ function Sell() {
               onChange={handleChange}
             />
           }
+          sx={{color: theme.palette.text.secondary}}
           label="Bill Available"
         />
         <input
@@ -162,7 +177,7 @@ function Sell() {
           <Box component="img"
             src={imagePreview}
             alt="Preview"
-            sx={{ mt: 2, width: '100%', height: 'auto', aspectRatio: '1 / 1', objectFit: 'cover', borderRadius: 2 }}
+            sx={{ mt: 2, width: '100%', height: 'auto', aspectRatio: '1 / 1',  objectFit: 'contain', borderRadius: 2,  backgroundColor: '#ffffff' }}
           />
         )}
         <Button type="submit" variant="contained" fullWidth sx={{ py: 1.5 }}>

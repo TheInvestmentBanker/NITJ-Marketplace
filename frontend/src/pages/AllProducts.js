@@ -1,10 +1,3 @@
-// Updated AllProducts.js
-// Changes:
-// - Added Container wrapping
-// - Adjusted Grid spacing and item sizes (xs=12, sm=6, md=4, lg=3 for better layout on larger screens)
-// - Made image heights auto
-// - Responsive typography
-
 import { useEffect, useState } from 'react';
 import { Grid, Card, CardContent, CardMedia, Typography, Button, Chip, Container } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -44,8 +37,13 @@ function AllProducts() {
   if (error) return <Typography variant="h6" className="text-center" color="error">Error: {error}</Typography>;
 
   return (
-    <Container maxWidth="lg" sx={{ py: 60, paddingTop : '100px',}}>
-      <Typography variant="h4" sx={{ mb: 6, textAlign: 'center', fontSize: { xs: '1.75rem', md: '2.125rem' } }}>
+    <Container sx={{ 
+     py: { xs: 15, md: 12 }, 
+     backgroundColor: (theme) => theme.palette.background.paper,
+     borderRadius: 0, 
+     boxShadow: 3, 
+     }}>
+      <Typography variant="h2" textAlign="center" sx={{fontSize: '2rem', paddingTop:'15px',paddingBottom:'25px', color: theme.palette.text.secondary,}}>
         Available Products
       </Typography>
       {products.length === 0 ? (
@@ -56,7 +54,7 @@ function AllProducts() {
         <Grid container spacing={{ xs: 2, md: 4 }} justifyContent="center">
           {products.map(product => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={product._id}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column',  }}>
                 <CardMedia
                   component="img"
                   image={getImageUrl(product.imagePublicId || product.imageUrl)}

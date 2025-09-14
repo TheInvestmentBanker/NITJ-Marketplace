@@ -14,6 +14,7 @@ import {
   Grid,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from '@mui/material/styles';
 
 // helper to build Cloudinary preview
 const getImageUrl = (publicId) => {
@@ -29,6 +30,7 @@ function AdminDashboard() {
   const navigate = useNavigate();
   const token = localStorage.getItem("adminToken");
   const API_URL = process.env.REACT_APP_API_URL;
+  const theme = useTheme();
 
   useEffect(() => {
     if (!token) return navigate("/admin/login");
@@ -144,8 +146,17 @@ function AdminDashboard() {
   if (loading) return <CircularProgress className="mx-auto my-10" />;
 
   return (
-    <Container maxWidth="lg" sx={{ py: 15 }}>
-      <Typography variant="h4" sx={{ mb: 4, fontSize: { xs: '1.75rem', md: '2.125rem' } }}>Admin Dashboard - Pending Items</Typography>
+    <Container sx={{ 
+     py: { xs: 15, md: 12 }, 
+     backgroundColor: (theme) => theme.palette.background.paper,
+     borderRadius: 0, 
+     boxShadow: 3, 
+     display: 'flex',               // ✅ make it flexbox
+     justifyContent: 'center',      // ✅ horizontal center
+     alignItems: 'center',          // ✅ vertical center
+     minHeight: '100vh',  
+     }}>
+       <Typography variant="h3" alignItems="center" textAlign="center" sx={{fontSize: '2rem', paddingTop:'15px', paddingBottom:'25px', color: theme.palette.text.secondary,}}>Admin Dashboard - Pending Items</Typography>
       
       {/* Tabs for Products/Services */}
       <Tabs value={tabValue} onChange={handleTabChange} centered fullWidth sx={{ mb: 6 }}>

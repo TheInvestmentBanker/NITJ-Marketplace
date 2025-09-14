@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Box, Button, TextField, Typography, Paper } from "@mui/material";
+import { Box, Button, TextField, Typography, Paper, Container } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from '@mui/material/styles';
 
 function AdminLogin() {
   const [username, setUsername] = useState("");
@@ -9,6 +10,7 @@ function AdminLogin() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const API_URL = process.env.REACT_APP_API_URL;
+  const theme = useTheme();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -31,9 +33,18 @@ function AdminLogin() {
   };
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: 'grey.100', px: { xs: 2, md: 0 }, py: 15 }}>
-      <Paper elevation={3} sx={{ p: { xs: 4, md: 8 }, maxWidth: 'md', width: '100%' }}>
-        <Typography variant="h5" sx={{ mb: 4, textAlign: 'center', fontSize: { xs: '1.5rem', md: '1.75rem' } }}>
+    <Container sx={{ 
+     py: { xs: 15, md: 12 }, 
+     backgroundColor: (theme) => theme.palette.background.paper,
+     borderRadius: 0, 
+     boxShadow: 3, 
+     display: 'flex',               // ✅ make it flexbox
+     justifyContent: 'center',      // ✅ horizontal center
+     alignItems: 'center',          // ✅ vertical center
+     minHeight: '100vh',  
+     }}>
+      <Paper elevation={3} className="p-8 max-w-md w-full ">
+        <Typography variant="h2" alignItems="center" textAlign="center" sx={{fontSize: '2rem', paddingTop:'15px', paddingBottom:'25px', color: theme.palette.text.secondary,}}>
           Admin Login
         </Typography>
         <Box component="form" onSubmit={handleLogin} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -67,7 +78,7 @@ function AdminLogin() {
           </Button>
         </Box>
       </Paper>
-    </Box>
+    </Container>
   );
 }
 
