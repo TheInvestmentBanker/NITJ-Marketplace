@@ -157,10 +157,10 @@ const Home = () => {
                         alt={product.name}
                         height="200"
                         sx={{ 
-                          objectFit: 'cover', 
+                          objectFit: 'contain', 
                           borderRadius: 6, 
-                          aspectRatio: '1/1',
-                          padding: '1px',
+                          aspectRatio: '1 / 1',
+                          padding: '18px',
                         }}
                       />
                       <CardContent sx={{ flexGrow: 1 }}>
