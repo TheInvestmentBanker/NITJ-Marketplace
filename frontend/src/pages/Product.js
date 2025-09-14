@@ -73,7 +73,7 @@ function Product() {
                       product.status === 'approved' ? 'success' : 'default';
 
   return (
-    <Container maxWidth="md" sx={{ py: { xs: 6, md: 10 } }}>
+    <Container maxWidth="md" sx={{ py: { xs: 10, md: 10 } }}>
       <Typography variant="h4" sx={{ mb: 4, fontSize: { xs: '1.75rem', md: '2.125rem' } }}>{product.name}</Typography>
       <Box
         component="img"
