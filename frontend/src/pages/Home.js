@@ -155,12 +155,11 @@ const Home = () => {
                         component="img"
                         image={getImageUrl(product.imagePublicId || product.imageUrl)}
                         alt={product.name}
-                        height="auto"
                         sx={{ 
                           objectFit: 'cover', 
-                          borderRadius: 6, 
+                          borderRadius: 5, 
                           aspectRatio: '1 / 1',
-                          padding: '18px',
+                          padding: '15px',
                         }}
                       />
                       <CardContent sx={{ flexGrow: 1 }}>
