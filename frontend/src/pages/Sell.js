@@ -58,7 +58,7 @@ function Sell() {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ py: { xs: 6, md: 10 } }}>
+    <Container maxWidth="sm" sx={{ py: { xs: 10, md: 10 } }}>
       <Typography variant="h4" sx={{ mb: 6, textAlign: 'center', fontSize: { xs: '1.75rem', md: '2.125rem' } }}>
         Sell Something
       </Typography>
