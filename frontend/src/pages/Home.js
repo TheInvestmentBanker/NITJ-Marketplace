@@ -146,7 +146,7 @@ const Home = () => {
                         borderRadius: 3,
                         display: 'flex',
                         flexDirection: 'column',
-                        height: '390px',
+                        height: '430px',
                         maxWidth: {xs: '80%', sm: '85%', md: '90%',},
                         marginRight: '15px', // Increased horizontal margin for larger gaps (16px left/right = ~32px between cards)
                       }}
