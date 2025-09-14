@@ -103,7 +103,7 @@ const Home = () => {
           minWidth: 'fit',
           alignItems: 'center',
           justifyContent: 'center',
-          py: 12,
+          py: 15,
           color: theme.palette.text.primary,
         }}
       >
@@ -160,7 +160,7 @@ const Home = () => {
                           objectFit: 'cover', 
                           borderRadius: 6, 
                           aspectRatio: '1/1',
-                          padding: '18px',
+                          padding: '1px',
                         }}
                       />
                       <CardContent sx={{ flexGrow: 1 }}>

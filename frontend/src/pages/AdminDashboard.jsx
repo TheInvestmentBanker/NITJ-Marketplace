@@ -144,7 +144,7 @@ function AdminDashboard() {
   if (loading) return <CircularProgress className="mx-auto my-10" />;
 
   return (
-    <Container maxWidth="lg" sx={{ py: 6 }}>
+    <Container maxWidth="lg" sx={{ py: 15 }}>
       <Typography variant="h4" sx={{ mb: 4, fontSize: { xs: '1.75rem', md: '2.125rem' } }}>Admin Dashboard - Pending Items</Typography>
       
       {/* Tabs for Products/Services */}

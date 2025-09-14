@@ -31,7 +31,7 @@ function AdminLogin() {
   };
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: 'grey.100', px: { xs: 2, md: 0 } }}>
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: 'grey.100', px: { xs: 2, md: 0 }, py: 15 }}>
       <Paper elevation={3} sx={{ p: { xs: 4, md: 8 }, maxWidth: 'md', width: '100%' }}>
         <Typography variant="h5" sx={{ mb: 4, textAlign: 'center', fontSize: { xs: '1.5rem', md: '1.75rem' } }}>
           Admin Login
