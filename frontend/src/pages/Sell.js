@@ -162,7 +162,7 @@ function Sell() {
           <Box component="img"
             src={imagePreview}
             alt="Preview"
-            sx={{ mt: 2, width: '100%', height: 'auto', aspectRatio: '16/9', objectFit: 'cover', borderRadius: 2 }}
+            sx={{ mt: 2, width: '100%', height: 'auto', aspectRatio: '1 / 1', objectFit: 'cover', borderRadius: 2 }}
           />
         )}
         <Button type="submit" variant="contained" fullWidth sx={{ py: 1.5 }}>
