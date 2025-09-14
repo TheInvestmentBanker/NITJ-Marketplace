@@ -155,9 +155,9 @@ const Home = () => {
                         component="img"
                         image={getImageUrl(product.imagePublicId || product.imageUrl)}
                         alt={product.name}
-                        height="200"
+                        height="auto"
                         sx={{ 
-                          objectFit: 'contain', 
+                          objectFit: 'cover', 
                           borderRadius: 6, 
                           aspectRatio: '1 / 1',
                           padding: '18px',
