@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Typography, Button, Box, Chip, TextField, FormControlLabel, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Typography, Button, Box, Chip, TextField, FormControlLabel, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions, Container } from '@mui/material';
 import axios from 'axios';
 
 const getImageUrl = (publicId) => {
@@ -69,28 +69,29 @@ function SingleService() {
                      service.status === 'approved' ? 'success' : 'default';
 
   return (
-    <Box className="py-10 max-w-2xl mx-auto">
-      <Typography variant="h4" className="mb-4">{service.serviceTitle}</Typography>
-      <img
+    <Container maxWidth="md" sx={{ py: { xs: 6, md: 10 } }}>
+      <Typography variant="h4" sx={{ mb: 4, fontSize: { xs: '1.75rem', md: '2.125rem' } }}>{service.serviceTitle}</Typography>
+      <Box
+        component="img"
         src={getImageUrl(service.imagePublicId)}
         alt={service.serviceTitle}
-        className="w-full h-64 object-cover mb-4"
+        sx={{ width: '100%', height: 'auto', aspectRatio: '3/2', objectFit: 'cover', mb: 4, borderRadius: 2 }}
       />
-      <Typography variant="body1" className="mb-4">{service.description}</Typography>
-      <Typography variant="h6" className="mb-2">Price: ₹{service.price} ({service.priceType})</Typography>
-      <Typography variant="subtitle1" className="mb-2">
+      <Typography variant="body1" sx={{ mb: 4, fontSize: { xs: '0.875rem', md: '1rem' } }}>{service.description}</Typography>
+      <Typography variant="h6" sx={{ mb: 2, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>Price: ₹{service.price} ({service.priceType})</Typography>
+      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>
         Seller: {service.sellerName} - Contact: {service.sellerContact}
       </Typography>
-      <Typography variant="subtitle1" className="mb-2">Category: {service.serviceCategory}</Typography>
-      {service.duration && <Typography variant="subtitle1" className="mb-2">Duration: {service.duration}</Typography>}
-      {service.location && <Typography variant="subtitle1" className="mb-2">Location: {service.location}</Typography>}
-      <Typography variant="subtitle1" className="mb-2">
+      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>Category: {service.serviceCategory}</Typography>
+      {service.duration && <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>Duration: {service.duration}</Typography>}
+      {service.location && <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>Location: {service.location}</Typography>}
+      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>
         Price Negotiable: {service.isNegotiable ? 'Yes' : 'No'}
       </Typography>
       <Chip
         label={statusLabel}
         color={statusColor}
-        className="mb-4"
+        sx={{ mb: 4 }}
       />
       <Button
         variant="contained"
@@ -98,7 +99,7 @@ function SingleService() {
         onClick={() => {
           window.open(`https://wa.me/${service.sellerContact}`, "_blank");
         }}
-        className="mb-2"
+        sx={{ mb: 2 }}
       >
         Contact Seller (via WhatsApp)
       </Button>
@@ -112,7 +113,7 @@ function SingleService() {
             setEditing(true);
             setEditForm({ ...service });
           }}
-          className="ml-2"
+          sx={{ ml: 2 }}
         >
           Edit Service
         </Button>
@@ -122,14 +123,13 @@ function SingleService() {
       {editing && isAdmin && (
         <Dialog open={editing} onClose={() => setEditing(false)} maxWidth="md" fullWidth>
           <DialogTitle>Edit Service</DialogTitle>
-          <DialogContent>
+          <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
               label="Title"
               name="serviceTitle"
               value={editForm.serviceTitle || ''}
               onChange={handleEditChange}
               fullWidth
-              className="mb-2"
             />
             <TextField
               label="Description"
@@ -139,7 +139,6 @@ function SingleService() {
               fullWidth
               multiline
               rows={4}
-              className="mb-2"
             />
             <TextField
               label="Price"
@@ -148,7 +147,6 @@ function SingleService() {
               value={editForm.price || ''}
               onChange={handleEditChange}
               fullWidth
-              className="mb-2"
             />
             <TextField
               label="Price Type"
@@ -157,7 +155,6 @@ function SingleService() {
               value={editForm.priceType || 'fixed'}
               onChange={handleEditChange}
               fullWidth
-              className="mb-2"
               SelectProps={{ native: true }}
             >
               <option value="fixed">Fixed</option>
@@ -169,7 +166,6 @@ function SingleService() {
               value={editForm.duration || ''}
               onChange={handleEditChange}
               fullWidth
-              className="mb-2"
             />
             <TextField
               label="Category"
@@ -177,7 +173,6 @@ function SingleService() {
               value={editForm.serviceCategory || ''}
               onChange={handleEditChange}
               fullWidth
-              className="mb-2"
             />
             <TextField
               label="Location"
@@ -185,7 +180,6 @@ function SingleService() {
               value={editForm.location || ''}
               onChange={handleEditChange}
               fullWidth
-              className="mb-2"
             />
             <FormControlLabel
               control={
@@ -204,7 +198,6 @@ function SingleService() {
               value={editForm.status || 'pending'}
               onChange={handleEditChange}
               fullWidth
-              className="mb-2"
               SelectProps={{ native: true }}
             >
               <option value="pending">Pending</option>
@@ -216,9 +209,8 @@ function SingleService() {
               type="file"
               accept="image/*"
               onChange={handleImageChange}
-              className="mb-2"
             />
-            {imagePreview && <img src={imagePreview} alt="Preview" className="w-32 h-32 object-cover" />}
+            {imagePreview && <Box component="img" src={imagePreview} alt="Preview" sx={{ width: '100%', maxHeight: 200, objectFit: 'cover' }} />}
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setEditing(false)}>Cancel</Button>
@@ -226,7 +218,7 @@ function SingleService() {
           </DialogActions>
         </Dialog>
       )}
-    </Box>
+    </Container>
   );
 }
 

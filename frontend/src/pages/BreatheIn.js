@@ -19,7 +19,7 @@ function BreatheIn({ onFinish }) {
           left: 0,
           width: '100vw',
           height: '100vh',
-          bgcolor: '#121212', // Royal Purple (#6B3FA0)
+          bgcolor: '#121212',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',

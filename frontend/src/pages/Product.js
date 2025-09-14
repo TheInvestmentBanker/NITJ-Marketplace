@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Typography, Button, Box, Chip, TextField, FormControlLabel, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Typography, Button, Box, Chip, TextField, FormControlLabel, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions, Container } from '@mui/material';
 import axios from 'axios';
 
 const getImageUrl = (publicId) => {
@@ -73,29 +73,30 @@ function Product() {
                       product.status === 'approved' ? 'success' : 'default';
 
   return (
-    <Box className="py-10 max-w-2xl mx-auto">
-      <Typography variant="h4" className="mb-4">{product.name}</Typography>
-      <img
+    <Container maxWidth="md" sx={{ py: { xs: 6, md: 10 } }}>
+      <Typography variant="h4" sx={{ mb: 4, fontSize: { xs: '1.75rem', md: '2.125rem' } }}>{product.name}</Typography>
+      <Box
+        component="img"
         src={getImageUrl(product.imagePublicId)}
         alt={product.name}
-        className="w-full h-64 object-cover mb-4"
+        sx={{ width: '100%', height: 'auto', aspectRatio: '3/2', objectFit: 'cover', mb: 4, borderRadius: 2 }}
       />
-      <Typography variant="body1" className="mb-4">{product.description}</Typography>
-      <Typography variant="h6" className="mb-2">Price: ₹{product.price}</Typography>
-      <Typography variant="subtitle1" className="mb-2">
+      <Typography variant="body1" sx={{ mb: 4, fontSize: { xs: '0.875rem', md: '1rem' } }}>{product.description}</Typography>
+      <Typography variant="h6" sx={{ mb: 2, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>Price: ₹{product.price}</Typography>
+      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>
         Seller: {product.sellerName} - Contact: {product.sellerContact}
       </Typography>
-      <Typography variant="subtitle1" className="mb-2">Product Age: {product.productAge}</Typography>
-      <Typography variant="subtitle1" className="mb-2">
+      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>Product Age: {product.productAge}</Typography>
+      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>
         Price Negotiable: {product.isNegotiable ? 'Yes' : 'No'}
       </Typography>
-      <Typography variant="subtitle1" className="mb-2">
+      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' } }}>
         Bill Available: {product.hasBill ? 'Yes' : 'No'}
       </Typography>
       <Chip
         label={statusLabel}
         color={statusColor}
-        className="mb-4"
+        sx={{ mb: 4 }}
       />
       <Button
         variant="contained"
@@ -103,7 +104,7 @@ function Product() {
         onClick={() => {
           window.open(`https://wa.me/${product.sellerContact}`, "_blank");
         }}
-        className="mb-2"
+        sx={{ mb: 2 }}
       >
         Contact Seller (via WhatsApp)
       </Button>
@@ -117,7 +118,7 @@ function Product() {
             setEditing(true);
             setEditForm({ ...product });
           }}
-          className="ml-2"
+          sx={{ ml: 2 }}
         >
           Edit Product
         </Button>
@@ -127,14 +128,13 @@ function Product() {
       {editing && isAdmin && (
         <Dialog open={editing} onClose={() => setEditing(false)} maxWidth="md" fullWidth>
           <DialogTitle>Edit Product</DialogTitle>
-          <DialogContent>
+          <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
               label="Name"
               name="name"
               value={editForm.name || ''}
               onChange={handleEditChange}
               fullWidth
-              className="mb-2"
             />
             <TextField
               label="Description"
@@ -144,7 +144,6 @@ function Product() {
               fullWidth
               multiline
               rows={4}
-              className="mb-2"
             />
             <TextField
               label="Price"
@@ -153,7 +152,6 @@ function Product() {
               value={editForm.price || ''}
               onChange={handleEditChange}
               fullWidth
-              className="mb-2"
             />
             <TextField
               label="Product Age"
@@ -161,7 +159,6 @@ function Product() {
               value={editForm.productAge || ''}
               onChange={handleEditChange}
               fullWidth
-              className="mb-2"
             />
             <FormControlLabel
               control={
@@ -190,7 +187,6 @@ function Product() {
               value={editForm.status || 'pending'}
               onChange={handleEditChange}
               fullWidth
-              className="mb-2"
               SelectProps={{ native: true }}
             >
               <option value="pending">Pending</option>
@@ -203,9 +199,8 @@ function Product() {
               type="file"
               accept="image/*"
               onChange={handleImageChange}
-              className="mb-2"
             />
-            {imagePreview && <img src={imagePreview} alt="Preview" className="w-32 h-32 object-cover" />}
+            {imagePreview && <Box component="img" src={imagePreview} alt="Preview" sx={{ width: '100%', maxHeight: 200, objectFit: 'cover' }} />}
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setEditing(false)}>Cancel</Button>
@@ -213,7 +208,7 @@ function Product() {
           </DialogActions>
         </Dialog>
       )}
-    </Box>
+    </Container>
   );
 }
 

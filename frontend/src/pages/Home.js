@@ -98,11 +98,12 @@ const Home = () => {
         id="hero"
         sx={{
           backgroundColor: theme.palette.background.paper,
-          minHeight: { xs: 'auto', md: '100vh' },
-          display: 'flex',
+          minHeight: { xs: 'auto', sm: '100vh', md: '100vh' },
+          display: 'fit',
+          minWidth: 'fit',
           alignItems: 'center',
           justifyContent: 'center',
-          py: { xs: 6, md: 12 },
+          py: 12,
           color: theme.palette.text.primary,
         }}
       >
@@ -127,7 +128,7 @@ const Home = () => {
             >
               Buy and sell products and services!
             </Typography>
-            <Box sx={{ width: '123%', minHeight: { xs: '200px', md: '300px' }, pb: 3 }}>
+            <Box sx={{ width: {xs: '85%', sm: '95%', md: '123%',}, minHeight: '300px', pb: '25px' }}>
               {products.length === 0 ? (
                 <Typography variant="body1">No approved products available.</Typography>
               ) : (
@@ -139,27 +140,27 @@ const Home = () => {
                       to={`/product/${product._id}`}
                       sx={{
                         textDecoration: 'none',
-                        width: "80%", 
+                        width: 250, 
                         flexShrink: 0, 
                         boxShadow: 5,
                         borderRadius: 3,
                         display: 'flex',
                         flexDirection: 'column',
-                        maxWidth: '80%',
-                        marginRight: '16px', // Increased horizontal margin for larger gaps (16px left/right = ~32px between cards)
+                        height: '390px',
+                        maxWidth: {xs: '80%', sm: '85%', md: '90%',},
+                        marginRight: '15px', // Increased horizontal margin for larger gaps (16px left/right = ~32px between cards)
                       }}
                     >
                       <CardMedia
                         component="img"
                         image={getImageUrl(product.imagePublicId || product.imageUrl)}
                         alt={product.name}
+                        height="200"
                         sx={{ 
                           objectFit: 'cover', 
                           borderRadius: 6, 
-                          p: 2, 
                           aspectRatio: '1/1',
-                          width: '100%', 
-                          height: 'auto' 
+                          padding: '18px',
                         }}
                       />
                       <CardContent sx={{ flexGrow: 1 }}>
@@ -217,7 +218,7 @@ const Home = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          py: { xs: 6, md: 12 },
+          py: 12,
           color: theme.palette.text.primary,
         }}
       >
@@ -233,7 +234,7 @@ const Home = () => {
             >
               All Services
             </Typography>
-            <Box sx={{ width: '100%', minHeight: { xs: '200px', md: '300px' }, pb: 3 }}>
+            <Box sx={{ width: {xs: '85%', sm: '95%', md: '123%',}, minHeight: '300px', pb: 3 }}>
               <Slider {...slickSettings} sx={{ px: { xs: 1, md: 2 } }}>
                 {services.map((service) => (
                   <Card
@@ -244,24 +245,25 @@ const Home = () => {
                       textDecoration: 'none',
                       boxShadow: 5,
                       borderRadius: 3,
+                      width: 250,
+                      height: '390px',
+                      flexShrink: 0,
                       display: 'flex',
                       flexDirection: 'column',
-                      maxWidth: '100%',
-                      width: '100%',
+                      maxWidth: {xs: '80%', sm: '85%', md: '90%',},
                       mx: 2, // Increased horizontal margin for larger gaps
                     }}
                   >
                     <CardMedia
                       component="img"
+                      height="200"
                       image={service.image}
                       alt={service.name}
                       sx={{
                         objectFit: 'cover',
                         borderRadius: 6,
-                        p: 2,
-                        aspectRatio: '16/9',
-                        width: '100%',
-                        height: 'auto',
+                        aspectRatio: '1/1',
+                        padding: '18px',
                       }}
                     />
                     <CardContent sx={{ flexGrow: 1 }}>
