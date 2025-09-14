@@ -75,12 +75,13 @@ function Product() {
                       product.status === 'approved' ? 'success' : 'default';
 
   return (
-    <Container maxWidth="md" sx={{ 
+    <Box maxWidth="md" sx={{ 
       py: { xs: 15, md: 12 },                         // [CHANGED] padding same as Sell.js
       backgroundColor: theme.palette.background.paper, // [CHANGED] adaptive background
       borderRadius: 0,                                // [CHANGED] match Sell.js flat style
       boxShadow: 3,                                   // [CHANGED] stronger shadow like Sell.js
     }}>
+      <Container maxWidth="lg">
       <Typography 
         variant="h2" 
         sx={{ mb: 4, fontSize: '2rem', color: theme.palette.text.secondary }} // [CHANGED] color match Sell.js
@@ -228,6 +229,7 @@ function Product() {
         </Dialog>
       )}
     </Container>
+    </Box>
   );
 }
 

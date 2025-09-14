@@ -33,7 +33,7 @@ function AdminLogin() {
   };
 
   return (
-    <Container sx={{ 
+    <Box sx={{ 
      py: { xs: 15, md: 12 }, 
      backgroundColor: (theme) => theme.palette.background.paper,
      borderRadius: 0, 
@@ -43,6 +43,7 @@ function AdminLogin() {
      alignItems: 'center',          // ✅ vertical center
      minHeight: '100vh',  
      }}>
+      <Container maxWidth="lg">
       <Paper elevation={3} className="p-8 max-w-md w-full ">
         <Typography variant="h2" alignItems="center" textAlign="center" sx={{fontSize: '2rem', paddingTop:'15px', paddingBottom:'25px', color: theme.palette.text.secondary,}}>
           Admin Login
@@ -79,6 +80,7 @@ function AdminLogin() {
         </Box>
       </Paper>
     </Container>
+    </Box>
   );
 }
 

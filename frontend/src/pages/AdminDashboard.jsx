@@ -146,7 +146,7 @@ function AdminDashboard() {
   if (loading) return <CircularProgress className="mx-auto my-10" />;
 
   return (
-    <Container sx={{ 
+    <Box sx={{ 
      py: { xs: 15, md: 12 }, 
      backgroundColor: (theme) => theme.palette.background.paper,
      borderRadius: 0, 
@@ -156,6 +156,7 @@ function AdminDashboard() {
      alignItems: 'center',          // ✅ vertical center
      minHeight: '100vh',  
      }}>
+      <Container maxWidth="lg">
        <Typography variant="h3" alignItems="center" textAlign="center" sx={{fontSize: '2rem', paddingTop:'15px', paddingBottom:'25px', color: theme.palette.text.secondary,}}>Admin Dashboard - Pending Items</Typography>
       
       {/* Tabs for Products/Services */}
@@ -228,6 +229,7 @@ function AdminDashboard() {
         <Button variant="outlined" onClick={() => navigate('/services')}>View All Services</Button>
       </Box>
     </Container>
+    </Box>
   );
 }
 

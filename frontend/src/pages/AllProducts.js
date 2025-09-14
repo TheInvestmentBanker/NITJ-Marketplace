@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Grid, Card, CardContent, CardMedia, Typography, Button, Chip, Container } from '@mui/material';
+import { Grid, Card, CardContent, CardMedia, Typography, Button, Chip, Box, Container } from '@mui/material';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useTheme } from '@mui/material/styles';
@@ -37,12 +37,13 @@ function AllProducts() {
   if (error) return <Typography variant="h6" className="text-center" color="error">Error: {error}</Typography>;
 
   return (
-    <Container sx={{ 
+    <Box sx={{ 
      py: { xs: 15, md: 12 }, 
      backgroundColor: (theme) => theme.palette.background.paper,
      borderRadius: 0, 
      boxShadow: 3, 
      }}>
+      <Container maxWidth="lg">
       <Typography variant="h2" textAlign="center" sx={{fontSize: '2rem', paddingTop:'15px',paddingBottom:'25px', color: theme.palette.text.secondary,}}>
         Available Products
       </Typography>
@@ -82,6 +83,7 @@ function AllProducts() {
         </Grid>
       )}
     </Container>
+    </Box>
   );
 }
 

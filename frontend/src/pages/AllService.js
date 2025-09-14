@@ -29,8 +29,14 @@ function AllService() {
   if (loading) return <Typography>Loading services...</Typography>;
 
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 10, md: 10 }, paddingTop : '100px', }}>
-      <Typography variant="h4" sx={{ mb: 6, textAlign: 'center', fontSize: { xs: '1.75rem', md: '2.125rem' } }}>
+    <Box sx={{ 
+     py: { xs: 15, md: 12 }, 
+     backgroundColor: (theme) => theme.palette.background.paper,
+     borderRadius: 0, 
+     boxShadow: 3, 
+     }}>
+      <Container maxWidth="lg">
+      <Typography variant="h2" textAlign="center" sx={{fontSize: '2rem', paddingTop:'15px',paddingBottom:'25px', color: theme.palette.text.secondary,}}>
         All Services
       </Typography>
       <Grid container spacing={{ xs: 2, md: 4 }} justifyContent="center">
@@ -68,6 +74,7 @@ function AllService() {
         ))}
       </Grid>
     </Container>
+    </Box>
   );
 }
 

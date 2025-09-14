@@ -71,12 +71,13 @@ function SingleService() {
                      service.status === 'approved' ? 'success' : 'default';
 
   return (
-    <Container maxWidth="md" sx={{ 
+    <Box maxWidth="md" sx={{ 
       py: { xs: 15, md: 12 },                         
       backgroundColor: theme.palette.background.paper, 
       borderRadius: 0,                                
       boxShadow: 3,                                   
     }}>
+      <Container maxWidth="lg">
       <Typography 
         variant="h2" 
         sx={{ mb: 4, fontSize: '2rem', color: theme.palette.text.secondary }}>
@@ -239,6 +240,7 @@ function SingleService() {
         </Dialog>
       )}
     </Container>
+    </Box>
   );
 }
 

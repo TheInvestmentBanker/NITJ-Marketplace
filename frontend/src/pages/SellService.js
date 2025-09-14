@@ -64,12 +64,12 @@ function SellService() {
   };
 
   return (
-    <Container sx={{ 
+    <Box sx={{ 
      py: { xs: 15, md: 12 }, 
      backgroundColor: (theme) => theme.palette.background.paper,
      borderRadius: 0, 
      boxShadow: 3, 
-     }}>
+     }}><Container maxWidth="lg">
       <Typography variant="h2" textAlign="center" sx={{fontSize: '2rem', paddingTop:'15px',paddingBottom:'25px', color: theme.palette.text.secondary,}}>
         Post a Service
       </Typography>
@@ -187,6 +187,7 @@ function SellService() {
         </Button>
       </Box>
     </Container>
+    </Box>
   );
 }
 
