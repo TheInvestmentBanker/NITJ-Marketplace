@@ -16,7 +16,7 @@ function Header({ darkMode, setDarkMode }) {
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
         {/* Logo */}
         <Box sx={{ flexGrow: 1 }}>
-          <img src={Logo} alt="BuddyMate Logo" style={{ height: { xs: '30px', md: '40px' } }} onClick={() => navigate('/')} />
+          <img src={Logo} alt="BuddyMate Logo" style={{ width: { xs: '75%', sm:'85%', md: '100%' } }} onClick={() => navigate('/')} />
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, md: 2 }, mt: { xs: 1, sm: 0 } }}>
           <Link to="/sell" style={{ textDecoration: 'none' }}>
