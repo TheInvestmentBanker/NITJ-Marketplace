@@ -170,6 +170,7 @@ function Product() {
               sx={{
                 position: 'relative',
                 width: { xs: '100%', md: 300 },
+                display: "inline-block", 
               }}
             >
               <Box
@@ -216,11 +217,14 @@ function Product() {
             {isZoomed && (
               <Box
                 sx={{
+                  position: "absolute",   // 👈 floats over, no push down
+                  left: "110%",  
                   display: { xs: 'none', md: 'block' },
                   width: 420,
                   height: 420,
                   borderRadius: 2,
                   boxShadow: 3,
+                  zIndex: 100,
                   backgroundImage: `url(${getImageUrl(product.imagePublicId, 1200)})`,
                   backgroundRepeat: 'no-repeat',
                   backgroundPosition: `${mousePercent.x}% ${mousePercent.y}%`,
@@ -234,7 +238,7 @@ function Product() {
         </Box>
 
         {/* Remaining details (below image area) */}
-        <Typography variant="body1" sx={{ mb: 4, py: 20, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary }}>
+        <Typography variant="body1" sx={{ mb: 4, paddingTop: 15, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary }}>
               {product.description}
         </Typography>
         <Typography variant="h6" sx={{ mb: 2, fontSize: { xs: '1.25rem', md: '1.5rem' }, color: theme.palette.text.secondary }}>
