@@ -1,8 +1,22 @@
+// src/pages/Product.js  (or wherever your Product component lives)
 import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { Typography, Button, Box, Chip, TextField, FormControlLabel, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions, Container, overflow, border } from '@mui/material';
+import {
+  Typography,
+  Button,
+  Box,
+  Chip,
+  TextField,
+  FormControlLabel,
+  Checkbox,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Container
+} from '@mui/material';
 import axios from 'axios';
-import { useTheme } from '@mui/material/styles'; 
+import { useTheme } from '@mui/material/styles';
 
 // helper: returns Cloudinary url; width optional (used for zoom pane)
 const getImageUrl = (publicId, width = 600) => {
@@ -23,8 +37,8 @@ function Product() {
   const theme = useTheme();
 
   // --- ZOOM RELATED STATE & REFS ---
+  const wrapperRef = useRef(null); // wrapper containing image + zoom pane
   const imgRef = useRef(null);
-  const containerRef = useRef(null);
   const [isZoomed, setIsZoomed] = useState(false);                 // hover state
   const [mousePx, setMousePx] = useState({ x: 0, y: 0 });          // mouse pos in px inside image
   const [mousePercent, setMousePercent] = useState({ x: 50, y: 50 }); // pos in %
@@ -75,10 +89,12 @@ function Product() {
   const handleImageLoad = (e) => {
     // set natural size for correct zoom scaling
     setNaturalSize({ w: e.target.naturalWidth, h: e.target.naturalHeight });
+    // also set displayed size initially (useful if component mounted after image is loaded)
+    const rect = e.target.getBoundingClientRect();
+    setDisplayedSize({ w: rect.width, h: rect.height });
   };
 
   const handleMouseEnter = () => {
-    // Only activate zoom if we have a product image and natural size
     if (!product?.imagePublicId) return;
     setIsZoomed(true);
   };
@@ -88,7 +104,10 @@ function Product() {
   };
 
   const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
+    // use the actual image bounding rect to compute pointer position relative to the image
+    const imgEl = imgRef.current;
+    if (!imgEl) return;
+    const rect = imgEl.getBoundingClientRect();
     const x = e.clientX - rect.left; // px
     const y = e.clientY - rect.top;  // px
     const clampedX = Math.max(0, Math.min(x, rect.width));
@@ -102,10 +121,10 @@ function Product() {
 
   if (!product) return <Typography>Loading...</Typography>;
 
-  const statusLabel = product.status === 'sold' ? 'Sold' : 
-                     product.status === 'approved' ? 'Available' : 
+  const statusLabel = product.status === 'sold' ? 'Sold' :
+                     product.status === 'approved' ? 'Available' :
                      product.status === 'rejected' ? 'Rejected' : 'Pending';
-  const statusColor = product.status === 'sold' || product.status === 'rejected' ? 'error' : 
+  const statusColor = product.status === 'sold' || product.status === 'rejected' ? 'error' :
                       product.status === 'approved' ? 'success' : 'default';
 
   // compute background-size for zoom pane
@@ -117,15 +136,15 @@ function Product() {
   const LENS_SIZE = 110;
 
   return (
-    <Box sx={{ 
+    <Box sx={{
       py: { xs: 15, md: 12 },
       backgroundColor: theme.palette.background.paper,
       borderRadius: 0,
       boxShadow: 3,
     }}>
       <Container maxWidth="lg">
-        <Typography 
-          variant="h2" 
+        <Typography
+          variant="h2"
           sx={{ mb: 4, fontSize: '2rem', color: theme.palette.text.secondary }}
         >
           {product.name}
@@ -133,15 +152,35 @@ function Product() {
 
         {/* Layout: left = details, right = image + zoom */}
         <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 4, alignItems: 'flex-start' }}>
-          {/* Right: Image with hover zoom */}
-          <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start', flexShrink: 0 }}>
+          {/* Left: Product Details */}
+          <Box sx={{ flex: 1 }}>
+            <Typography variant="body1" sx={{ mb: 4, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary }}>
+              {product.description}
+            </Typography>
+            <Typography variant="h6" sx={{ mb: 2, fontSize: { xs: '1.25rem', md: '1.5rem' }, color: theme.palette.text.secondary }}>
+              Price: ₹{product.price}
+            </Typography>
+            {/* other details can go here */}
+          </Box>
+
+          {/* Right: Image + Zoom area (wrapped so mouse enter/leave includes both image and zoom pane) */}
+          <Box
+            ref={wrapperRef}
+            onMouseEnter={handleMouseEnter}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            sx={{
+              display: 'flex',
+              gap: 3,
+              alignItems: 'flex-start',
+              flexShrink: 0
+            }}
+          >
             {/* Image container */}
             <Box
-              ref={containerRef}
               sx={{
                 position: 'relative',
                 width: { xs: '100%', md: 300 },
-                // on mobile we show full-width above so width:100% in xs
               }}
             >
               <Box
@@ -150,9 +189,6 @@ function Product() {
                 src={getImageUrl(product.imagePublicId, 600)}
                 alt={product.name}
                 onLoad={handleImageLoad}
-                onMouseEnter={handleMouseEnter}
-                onMouseMove={handleMouseMove}
-                onMouseLeave={handleMouseLeave}
                 sx={{
                   width: '100%',
                   height: 'auto',
@@ -189,54 +225,50 @@ function Product() {
 
             {/* Zoom Pane (desktop only, only while zooming) */}
             {isZoomed && (
-            <Box
-              sx={{
-                 display: { xs: 'none', md: 'block' },
-                 width: 420,
-                 height: 420,
-                 borderRadius: 2,
-                 boxShadow: 3,
-                 backgroundImage: `url(${getImageUrl(product.imagePublicId, 1200)})`,
-                 backgroundRepeat: 'no-repeat',
-                 backgroundPosition: `${mousePercent.x}% ${mousePercent.y}%`,
-                 backgroundSize: zoomBackgroundSize,
-                 border: '1px solid rgba(0,0,0,0.08)',
-                 overflow: 'hidden',
-                 }}
-                 />
-             )}
+              <Box
+                sx={{
+                  display: { xs: 'none', md: 'block' },
+                  width: 420,
+                  height: 420,
+                  borderRadius: 2,
+                  boxShadow: 3,
+                  backgroundImage: `url(${getImageUrl(product.imagePublicId, 1200)})`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: `${mousePercent.x}% ${mousePercent.y}%`,
+                  backgroundSize: zoomBackgroundSize,
+                  border: '1px solid rgba(0,0,0,0.08)',
+                  overflow: 'hidden'
+                }}
+              />
+            )}
+          </Box>
+        </Box>
 
-        {/* Remaining details */}
-        <Typography variant="body1" sx={{ mb: 4, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary }}>
-              {product.description}
+        {/* Remaining details (below image area) */}
+        <Typography variant="body1" sx={{ mt: 4, mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary }}>
+          Product Age: {product.productAge}
         </Typography>
-        <Typography variant="h6" sx={{ mb: 2, fontSize: { xs: '1.25rem', md: '1.5rem' },color: theme.palette.text.secondary }}>Price: ₹{product.price}</Typography>
-        <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary  }}>
+        <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary }}>
           Seller: {product.sellerName} - Contact: {product.sellerContact}
         </Typography>
-        <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary  }}>Product Age: {product.productAge}</Typography>
-        <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary  }}>
+        <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary }}>
           Price Negotiable: {product.isNegotiable ? 'Yes' : 'No'}
         </Typography>
-        <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary  }}>
+        <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary }}>
           Bill Available: {product.hasBill ? 'Yes' : 'No'}
         </Typography>
-        <Chip
-          label={statusLabel}
-          color={statusColor}
-          sx={{ mb: 4 }}
-        />
+
+        <Chip label={statusLabel} color={statusColor} sx={{ mb: 4 }} />
+
         <Button
           variant="contained"
           disabled={product.status !== 'approved'}
-          onClick={() => {
-            window.open(`https://wa.me/${product.sellerContact}`, "_blank");
-          }}
+          onClick={() => window.open(`https://wa.me/${product.sellerContact}`, "_blank")}
           sx={{ mb: 2 }}
         >
           Contact Seller (via WhatsApp)
         </Button>
-        
+
         {/* Admin Edit Button */}
         {isAdmin && (
           <Button
@@ -300,7 +332,7 @@ function Product() {
                     onChange={handleEditChange}
                   />
                 }
-                sx={{color: theme.palette.text.secondary}}
+                sx={{ color: theme.palette.text.secondary }}
                 label="Negotiable"
               />
               <FormControlLabel
@@ -311,7 +343,7 @@ function Product() {
                     onChange={handleEditChange}
                   />
                 }
-                sx={{color: theme.palette.text.secondary}}
+                sx={{ color: theme.palette.text.secondary }}
                 label="Has Bill"
               />
               <TextField
@@ -329,11 +361,8 @@ function Product() {
                 <option value="sold">Sold</option>
                 <option value="rejected">Rejected</option>
               </TextField>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
+
+              <input type="file" accept="image/*" onChange={handleImageChange} />
               {imagePreview && <Box component="img" src={imagePreview} alt="Preview" sx={{ width: '100%', maxHeight: 200, objectFit: 'cover' }} />}
             </DialogContent>
             <DialogActions>
