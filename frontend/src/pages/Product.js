@@ -217,7 +217,8 @@ function Product() {
             {isZoomed && (
               <Box
                 sx={{
-                  position: "absolute",   // 👈 floats over, no push down  
+                  position: "absolute",   // 👈 floats over, no push down
+                  left: "50%",  
                   display: { xs: 'none', md: 'block' },
                   width: 420,
                   height: 420,
