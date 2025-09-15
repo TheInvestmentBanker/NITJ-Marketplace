@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Typography, Button, Box, Chip, TextField, FormControlLabel, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions, Container } from '@mui/material';
 import axios from 'axios';
 import { useTheme } from '@mui/material/styles'; 
 
-const getImageUrl = (publicId) => {
+// helper: returns Cloudinary url; width optional (used for zoom pane)
+const getImageUrl = (publicId, width = 600) => {
   if (!publicId) return 'https://via.placeholder.com/600x400';
-  return `https://res.cloudinary.com/dj1e78e53/image/upload/f_auto,q_auto,w_600/${publicId}`;
-}; 
+  return `https://res.cloudinary.com/dj1e78e53/image/upload/f_auto,q_auto,w_${width}/${publicId}`;
+};
 
 function Product() {
   const { id } = useParams();
@@ -21,6 +22,15 @@ function Product() {
   const token = localStorage.getItem('adminToken');
   const theme = useTheme();
 
+  // --- ZOOM RELATED STATE & REFS ---
+  const imgRef = useRef(null);
+  const containerRef = useRef(null);
+  const [isZoomed, setIsZoomed] = useState(false);                 // hover state
+  const [mousePx, setMousePx] = useState({ x: 0, y: 0 });          // mouse pos in px inside image
+  const [mousePercent, setMousePercent] = useState({ x: 50, y: 50 }); // pos in %
+  const [displayedSize, setDisplayedSize] = useState({ w: 0, h: 0 });
+  const [naturalSize, setNaturalSize] = useState({ w: 0, h: 0 });
+
   useEffect(() => {
     axios.get(`${API_URL}/api/products/${id}`)
       .then(res => {
@@ -28,7 +38,7 @@ function Product() {
         if (editing) setEditForm(res.data); // Prefill if editing
       })
       .catch(err => console.error(err));
-  }, [id, editing]);
+  }, [id, editing, API_URL]);
 
   const handleEditChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -43,12 +53,8 @@ function Product() {
 
   const handleEditSubmit = async () => {
     try {
-      // For image: If new file, you'd need to upload to Cloudinary first and get new publicId/url
-      // For simplicity, skipping image edit here; add Cloudinary upload logic if needed (similar to Sell.js)
       const updateData = { ...editForm };
       if (imageFile) {
-        // Placeholder: Upload image separately and add imagePublicId/imageUrl to updateData
-        // e.g., const uploadRes = await uploadToCloudinary(imageFile); updateData.imagePublicId = uploadRes.public_id; etc.
         alert('Image upload not implemented in this form; update text fields only for now.');
       }
 
@@ -56,7 +62,6 @@ function Product() {
         headers: { Authorization: `Bearer ${token}` },
       });
       setEditing(false);
-      // Refresh product
       const res = await axios.get(`${API_URL}/api/products/${id}`);
       setProduct(res.data);
       alert('Product updated!');
@@ -64,6 +69,35 @@ function Product() {
       console.error(err);
       alert('Error updating product');
     }
+  };
+
+  // --- ZOOM HANDLERS ---
+  const handleImageLoad = (e) => {
+    // set natural size for correct zoom scaling
+    setNaturalSize({ w: e.target.naturalWidth, h: e.target.naturalHeight });
+  };
+
+  const handleMouseEnter = () => {
+    // Only activate zoom if we have a product image and natural size
+    if (!product?.imagePublicId) return;
+    setIsZoomed(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsZoomed(false);
+  };
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left; // px
+    const y = e.clientY - rect.top;  // px
+    const clampedX = Math.max(0, Math.min(x, rect.width));
+    const clampedY = Math.max(0, Math.min(y, rect.height));
+    const percentX = (clampedX / rect.width) * 100;
+    const percentY = (clampedY / rect.height) * 100;
+    setMousePx({ x: clampedX, y: clampedY });
+    setMousePercent({ x: percentX, y: percentY });
+    setDisplayedSize({ w: rect.width, h: rect.height });
   };
 
   if (!product) return <Typography>Loading...</Typography>;
@@ -74,161 +108,250 @@ function Product() {
   const statusColor = product.status === 'sold' || product.status === 'rejected' ? 'error' : 
                       product.status === 'approved' ? 'success' : 'default';
 
+  // compute background-size for zoom pane
+  const zoomBackgroundSize = (naturalSize.w && displayedSize.w)
+    ? `${(naturalSize.w / displayedSize.w) * 100}% ${(naturalSize.h / displayedSize.h) * 100}%`
+    : 'cover';
+
+  // Lens visual size (px)
+  const LENS_SIZE = 110;
+
   return (
     <Box sx={{ 
-      py: { xs: 15, md: 12 },                         // [CHANGED] padding same as Sell.js
-      backgroundColor: theme.palette.background.paper, // [CHANGED] adaptive background
-      borderRadius: 0,                                // [CHANGED] match Sell.js flat style
-      boxShadow: 3,                                   // [CHANGED] stronger shadow like Sell.js
+      py: { xs: 15, md: 12 },
+      backgroundColor: theme.palette.background.paper,
+      borderRadius: 0,
+      boxShadow: 3,
     }}>
       <Container maxWidth="lg">
-      <Typography 
-        variant="h2" 
-        sx={{ mb: 4, fontSize: '2rem', color: theme.palette.text.secondary }} // [CHANGED] color match Sell.js
-      >
-        {product.name}
-      </Typography>
-      <Box
-        component="img"
-        src={getImageUrl(product.imagePublicId)}
-        alt={product.name}
-        sx={{ width: '100%', height: 'auto', aspectRatio: '1/1', objectFit: 'cover', mb: 4, borderRadius: 2, backgroundColor: '#fff' }}
-      />
-      <Typography variant="body1" sx={{ mb: 4, fontSize: { xs: '0.875rem', md: '1rem' },  color: theme.palette.text.secondary  }}>{product.description}</Typography>
-      <Typography variant="h6" sx={{ mb: 2, fontSize: { xs: '1.25rem', md: '1.5rem' },color: theme.palette.text.secondary }}>Price: ₹{product.price}</Typography>
-      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary  }}>
-        Seller: {product.sellerName} - Contact: {product.sellerContact}
-      </Typography>
-      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary  }}>Product Age: {product.productAge}</Typography>
-      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary  }}>
-        Price Negotiable: {product.isNegotiable ? 'Yes' : 'No'}
-      </Typography>
-      <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary  }}>
-        Bill Available: {product.hasBill ? 'Yes' : 'No'}
-      </Typography>
-      <Chip
-        label={statusLabel}
-        color={statusColor}
-        sx={{ mb: 4 }}
-      />
-      <Button
-        variant="contained"
-        disabled={product.status !== 'approved'}
-        onClick={() => {
-          window.open(`https://wa.me/${product.sellerContact}`, "_blank");
-        }}
-        sx={{ mb: 2 }}
-      >
-        Contact Seller (via WhatsApp)
-      </Button>
-      
-      {/* Admin Edit Button */}
-      {isAdmin && (
-        <Button
-          variant="outlined"
-          size="small"
-          onClick={() => {
-            setEditing(true);
-            setEditForm({ ...product });
-          }}
-          sx={{ ml: 2 }}
+        <Typography 
+          variant="h2" 
+          sx={{ mb: 4, fontSize: '2rem', color: theme.palette.text.secondary }}
         >
-          Edit Product
-        </Button>
-      )}
+          {product.name}
+        </Typography>
 
-      {/* Edit Dialog/Modal */}
-      {editing && isAdmin && (
-        <Dialog open={editing} onClose={() => setEditing(false)} maxWidth="md" fullWidth>
-          <DialogTitle>Edit Product</DialogTitle>
-          <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField
-              label="Name"
-              name="name"
-              value={editForm.name || ''}
-              onChange={handleEditChange}
-              InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
-              fullWidth
-            />
-            <TextField
-              label="Description"
-              name="description"
-              value={editForm.description || ''}
-              onChange={handleEditChange}
-              fullWidth
-              multiline
-              InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
-              rows={4}
-            />
-            <TextField
-              label="Price"
-              name="price"
-              type="number"
-              value={editForm.price || ''}
-              onChange={handleEditChange}
-              InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
-              fullWidth
-            />
-            <TextField
-              label="Product Age"
-              name="productAge"
-              value={editForm.productAge || ''}
-              onChange={handleEditChange}
-              InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
-              fullWidth
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name="isNegotiable"
-                  checked={editForm.isNegotiable || false}
-                  onChange={handleEditChange}
-                />
-              }
-              sx={{color: theme.palette.text.secondary}}
-              label="Negotiable"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name="hasBill"
-                  checked={editForm.hasBill || false}
-                  onChange={handleEditChange}
-                />
-              }
-              sx={{color: theme.palette.text.secondary}}
-              label="Has Bill"
-            />
-            <TextField
-              label="Status"
-              name="status"
-              select
-              value={editForm.status || 'pending'}
-              onChange={handleEditChange}
-              fullWidth
-              InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
-              SelectProps={{ native: true }}
+        {/* Layout: left = details, right = image + zoom */}
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 4, alignItems: 'flex-start' }}>
+          {/* Left: Product Details */}
+          <Box sx={{ flex: 1 }}>
+            <Typography variant="body1" sx={{ mb: 4, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary }}>
+              {product.description}
+            </Typography>
+
+            <Typography variant="h6" sx={{ mb: 2, fontSize: { xs: '1.25rem', md: '1.5rem' }, color: theme.palette.text.secondary }}>
+              Price: ₹{product.price}
+            </Typography>
+            {/* Add other fields if needed */}
+          </Box>
+
+          {/* Right: Image with hover zoom */}
+          <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start', flexShrink: 0 }}>
+            {/* Image container */}
+            <Box
+              ref={containerRef}
+              sx={{
+                position: 'relative',
+                width: { xs: '100%', md: 300 },
+                // on mobile we show full-width above so width:100% in xs
+              }}
             >
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="sold">Sold</option>
-              <option value="rejected">Rejected</option>
-            </TextField>
-            {/* Image Edit: For now, placeholder; implement upload if needed */}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
+              <Box
+                component="img"
+                ref={imgRef}
+                src={getImageUrl(product.imagePublicId, 600)}
+                alt={product.name}
+                onLoad={handleImageLoad}
+                onMouseEnter={handleMouseEnter}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+                sx={{
+                  width: '100%',
+                  height: 'auto',
+                  borderRadius: 2,
+                  backgroundColor: '#fff',
+                  boxShadow: 3,
+                  transition: 'transform 0.15s ease',
+                  cursor: 'zoom-in',
+                  display: 'block',
+                }}
+              />
+
+              {/* Lens overlay (visual) */}
+              {isZoomed && (
+                <Box
+                  sx={{
+                    display: { xs: 'none', md: 'block' }, // lens only on desktop
+                    position: 'absolute',
+                    pointerEvents: 'none',
+                    width: `${LENS_SIZE}px`,
+                    height: `${LENS_SIZE}px`,
+                    borderRadius: 1,
+                    border: '1px solid rgba(255,255,255,0.9)',
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.25)',
+                    transform: 'translate(-50%,-50%)',
+                    left: `${mousePx.x}px`,
+                    top: `${mousePx.y}px`,
+                    background: 'rgba(255,255,255,0.04)',
+                    backdropFilter: 'blur(0.5px)',
+                  }}
+                />
+              )}
+            </Box>
+
+            {/* Zoom Pane (desktop only) */}
+            <Box
+              sx={{
+                display: { xs: 'none', md: 'block' },
+                width: 420,
+                height: 420,
+                borderRadius: 2,
+                boxShadow: 3,
+                backgroundImage: `url(${getImageUrl(product.imagePublicId, 1200)})`,
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: `${mousePercent.x}% ${mousePercent.y}%`,
+                backgroundSize: zoomBackgroundSize,
+                border: '1px solid rgba(0,0,0,0.08)',
+                overflow: 'hidden'
+              }}
             />
-            {imagePreview && <Box component="img" src={imagePreview} alt="Preview" sx={{ width: '100%', maxHeight: 200, objectFit: 'cover' }} />}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setEditing(false)}>Cancel</Button>
-            <Button onClick={handleEditSubmit} variant="contained">Save Changes</Button>
-          </DialogActions>
-        </Dialog>
-      )}
-    </Container>
+          </Box>
+        </Box>
+
+        {/* Remaining details */}
+        <Typography variant="h6" sx={{ mb: 2, fontSize: { xs: '1.25rem', md: '1.5rem' },color: theme.palette.text.secondary }}>Price: ₹{product.price}</Typography>
+        <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary  }}>
+          Seller: {product.sellerName} - Contact: {product.sellerContact}
+        </Typography>
+        <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary  }}>Product Age: {product.productAge}</Typography>
+        <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary  }}>
+          Price Negotiable: {product.isNegotiable ? 'Yes' : 'No'}
+        </Typography>
+        <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary  }}>
+          Bill Available: {product.hasBill ? 'Yes' : 'No'}
+        </Typography>
+        <Chip
+          label={statusLabel}
+          color={statusColor}
+          sx={{ mb: 4 }}
+        />
+        <Button
+          variant="contained"
+          disabled={product.status !== 'approved'}
+          onClick={() => {
+            window.open(`https://wa.me/${product.sellerContact}`, "_blank");
+          }}
+          sx={{ mb: 2 }}
+        >
+          Contact Seller (via WhatsApp)
+        </Button>
+        
+        {/* Admin Edit Button */}
+        {isAdmin && (
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => {
+              setEditing(true);
+              setEditForm({ ...product });
+            }}
+            sx={{ ml: 2 }}
+          >
+            Edit Product
+          </Button>
+        )}
+
+        {/* Edit Dialog/Modal */}
+        {editing && isAdmin && (
+          <Dialog open={editing} onClose={() => setEditing(false)} maxWidth="md" fullWidth>
+            <DialogTitle>Edit Product</DialogTitle>
+            <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <TextField
+                label="Name"
+                name="name"
+                value={editForm.name || ''}
+                onChange={handleEditChange}
+                InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
+                fullWidth
+              />
+              <TextField
+                label="Description"
+                name="description"
+                value={editForm.description || ''}
+                onChange={handleEditChange}
+                fullWidth
+                multiline
+                InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
+                rows={4}
+              />
+              <TextField
+                label="Price"
+                name="price"
+                type="number"
+                value={editForm.price || ''}
+                onChange={handleEditChange}
+                InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
+                fullWidth
+              />
+              <TextField
+                label="Product Age"
+                name="productAge"
+                value={editForm.productAge || ''}
+                onChange={handleEditChange}
+                InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
+                fullWidth
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="isNegotiable"
+                    checked={editForm.isNegotiable || false}
+                    onChange={handleEditChange}
+                  />
+                }
+                sx={{color: theme.palette.text.secondary}}
+                label="Negotiable"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="hasBill"
+                    checked={editForm.hasBill || false}
+                    onChange={handleEditChange}
+                  />
+                }
+                sx={{color: theme.palette.text.secondary}}
+                label="Has Bill"
+              />
+              <TextField
+                label="Status"
+                name="status"
+                select
+                value={editForm.status || 'pending'}
+                onChange={handleEditChange}
+                fullWidth
+                InputProps={{ sx: { backgroundColor: (theme) => theme.palette.background.default } }}
+                SelectProps={{ native: true }}
+              >
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="sold">Sold</option>
+                <option value="rejected">Rejected</option>
+              </TextField>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+              {imagePreview && <Box component="img" src={imagePreview} alt="Preview" sx={{ width: '100%', maxHeight: 200, objectFit: 'cover' }} />}
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setEditing(false)}>Cancel</Button>
+              <Button onClick={handleEditSubmit} variant="contained">Save Changes</Button>
+            </DialogActions>
+          </Dialog>
+        )}
+      </Container>
     </Box>
   );
 }
