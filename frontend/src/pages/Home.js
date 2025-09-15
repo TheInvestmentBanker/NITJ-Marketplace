@@ -9,6 +9,7 @@ import {
   CardContent,
   CardMedia,
   CircularProgress,
+  useMediaQuery,
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
@@ -30,6 +31,8 @@ const Home = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Mobile if < 600px
+  const itemsPerSlide = isMobile ? 1 : 4;
 
   // Fetch products and services
   useEffect(() => {
@@ -58,7 +61,7 @@ const Home = () => {
     dots: true,
     infinite: true,
     speed: 1500,
-    slidesToShow: 4, // Default for lg+
+    slidesToShow: itemsPerSlide, // Default for lg+
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 0,
@@ -68,19 +71,19 @@ const Home = () => {
     pauseOnHover: true,
     responsive: [
       {
-        breakpoint: 900, // md
+        breakpoint: 1200, // lg
         settings: {
           slidesToShow: 3,
         },
       },
       {
-        breakpoint: 600, // sm
+        breakpoint: 900, // md
         settings: {
           slidesToShow: 2,
         },
       },
       {
-        breakpoint: 400, // xs
+        breakpoint: 600, // sm
         settings: {
           slidesToShow: 1,
         },
