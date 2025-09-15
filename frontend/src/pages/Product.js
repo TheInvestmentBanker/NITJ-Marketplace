@@ -238,13 +238,13 @@ function Product() {
         </Box>
 
         {/* Remaining details (below image area) */}
-        <Typography variant="body1" sx={{ mb: 4, paddingTop: 15, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary }}>
+        <Typography variant="body1" sx={{ mb: 2, paddingTop: 15, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary }}>
               {product.description}
         </Typography>
-        <Typography variant="h6" sx={{ mb: 2, fontSize: { xs: '1.25rem', md: '1.5rem' }, color: theme.palette.text.secondary }}>
+        <Typography variant="h6" sx={{ mb: 3, fontSize: { xs: '1.25rem', md: '1.5rem' }, color: theme.palette.text.secondary }}>
               Price: ₹{product.price}
         </Typography>
-        <Typography variant="body1" sx={{ mt: 4, mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary }}>
+        <Typography variant="body1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary }}>
           Product Age: {product.productAge}
         </Typography>
         <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary }}>
