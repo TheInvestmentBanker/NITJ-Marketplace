@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { Typography, Button, Box, Chip, TextField, FormControlLabel, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions, Container } from '@mui/material';
+import { Typography, Button, Box, Chip, TextField, FormControlLabel, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions, Container, overflow, border } from '@mui/material';
 import axios from 'axios';
 import { useTheme } from '@mui/material/styles'; 
 
@@ -187,24 +187,24 @@ function Product() {
               )}
             </Box>
 
-            {/* Zoom Pane (desktop only) */}
+            {/* Zoom Pane (desktop only, only while zooming) */}
+            {isZoomed && (
             <Box
               sx={{
-                display: { xs: 'none', md: 'block' },
-                width: 420,
-                height: 420,
-                borderRadius: 2,
-                boxShadow: 3,
-                backgroundImage: `url(${getImageUrl(product.imagePublicId, 1200)})`,
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: `${mousePercent.x}% ${mousePercent.y}%`,
-                backgroundSize: zoomBackgroundSize,
-                border: '1px solid rgba(0,0,0,0.08)',
-                overflow: 'hidden'
-              }}
-            />
-          </Box>
-        </Box>
+                 display: { xs: 'none', md: 'block' },
+                 width: 420,
+                 height: 420,
+                 borderRadius: 2,
+                 boxShadow: 3,
+                 backgroundImage: `url(${getImageUrl(product.imagePublicId, 1200)})`,
+                 backgroundRepeat: 'no-repeat',
+                 backgroundPosition: `${mousePercent.x}% ${mousePercent.y}%`,
+                 backgroundSize: zoomBackgroundSize,
+                 border: '1px solid rgba(0,0,0,0.08)',
+                 overflow: 'hidden',
+                 }}
+                 />
+             )}
 
         {/* Remaining details */}
         <Typography variant="body1" sx={{ mb: 4, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary }}>
