@@ -133,18 +133,6 @@ function Product() {
 
         {/* Layout: left = details, right = image + zoom */}
         <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 4, alignItems: 'flex-start' }}>
-          {/* Left: Product Details */}
-          <Box sx={{ flex: 1 }}>
-            <Typography variant="body1" sx={{ mb: 4, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary }}>
-              {product.description}
-            </Typography>
-
-            <Typography variant="h6" sx={{ mb: 2, fontSize: { xs: '1.25rem', md: '1.5rem' }, color: theme.palette.text.secondary }}>
-              Price: ₹{product.price}
-            </Typography>
-            {/* Add other fields if needed */}
-          </Box>
-
           {/* Right: Image with hover zoom */}
           <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start', flexShrink: 0 }}>
             {/* Image container */}
@@ -219,6 +207,9 @@ function Product() {
         </Box>
 
         {/* Remaining details */}
+        <Typography variant="body1" sx={{ mb: 4, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary }}>
+              {product.description}
+        </Typography>
         <Typography variant="h6" sx={{ mb: 2, fontSize: { xs: '1.25rem', md: '1.5rem' },color: theme.palette.text.secondary }}>Price: ₹{product.price}</Typography>
         <Typography variant="subtitle1" sx={{ mb: 2, fontSize: { xs: '0.875rem', md: '1rem' }, color: theme.palette.text.secondary  }}>
           Seller: {product.sellerName} - Contact: {product.sellerContact}
